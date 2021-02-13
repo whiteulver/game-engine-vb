@@ -17,7 +17,7 @@ Private SpriteContext As Long
 Private SpriteMaskContext As Long
 Private Bank As Integer
 Private Height As Long
-Private Width
+Private Width As Long
 Private MaxBanks As Integer
 
 

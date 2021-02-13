@@ -41,6 +41,7 @@ Public Sub run(source As Form)
         If (T2 - T1) >= FrameRate Then
             KeyboardInput
             Rendering.Cls 640, 240
+            ' source.Cls
             raiseIdleEvent
             DispatchEvents
             Rendering.DrawToScreen source.hdc, 640, 240
@@ -48,11 +49,11 @@ Public Sub run(source As Form)
             T1 = GetTickCount
         End If
     Loop Until IsRunning = False
+    Rendering.ClearObjects (source.hdc)
 End Sub
 
 Public Sub terminate()
     IsRunning = False
-    Rendering.ClearObjects
 End Sub
 
 Public Sub raise(e As DomainEvent)

@@ -26,5 +26,5 @@ End Sub
 Public Sub Cls(Width As Long, Height As Long)
 End Sub
 
-Public Sub ClearObjects()
+Public Sub ClearObjects(ByRef hdc As Long)
 End Sub

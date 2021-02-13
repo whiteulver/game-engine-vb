@@ -5,15 +5,16 @@ Begin VB.Form frmMain
    BackColor       =   &H80000005&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Game Engine"
-   ClientHeight    =   3975
+   ClientHeight    =   3840
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   7680
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   3975
-   ScaleWidth      =   7680
+   ScaleHeight     =   256
+   ScaleMode       =   3  'Pixel
+   ScaleWidth      =   512
    StartUpPosition =   2  'CenterScreen
 End
 Attribute VB_Name = "frmMain"
@@ -41,6 +42,7 @@ End Sub
 
 Private Sub Form_Load()
     'Set GameEventDispatcher = New EventDispatcher
+    Me.Height = 240 * (Height / ScaleHeight)
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)

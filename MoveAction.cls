@@ -61,8 +61,8 @@ Public Sub Action_run(e As DomainEvent)
             dstY = 0
         End If
         
-        If dstY > 256 - sprite.getHeight Then
-            dstY = 256 - sprite.getHeight
+        If dstY > 240 - sprite.getHeight Then
+            dstY = 240 - sprite.getHeight
         End If
 
     End If

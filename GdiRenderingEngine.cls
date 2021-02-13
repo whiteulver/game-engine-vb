@@ -14,7 +14,6 @@ Attribute VB_Exposed = False
 Implements RenderingEngine
 
 Private DeviceContext As Long
-Private EmptyDeviceContext As Long
 
 Private Declare Function GetDC Lib "user32" (ByVal hwnd As Long) As Long
 Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal x As Long, ByVal y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
@@ -36,21 +35,21 @@ Private Declare Function CreateSolidBrush Lib "gdi32" (ByVal crColor As Long) As
 
 Public Sub RenderingEngine_initialize()
     DeviceContext = CreateContext
-    EmptyDeviceContext = CreateContext
-    'ScreenDeviceContext = GetDC(0)
-    'DeviceContext = CreateCompatibleDC(ScreenDeviceContext)
-    'Bitmap = CreateCompatibleBitmap(ScreenDeviceContext, 640, 240)
-    'SelectObject DeviceContext, Bitmap
-    'DeleteObject Bitmap
-End Sub
+ End Sub
 Private Function CreateContext() As Long
-    Dim TmpDeviceContext As Long
     Dim Bitmap As Long
-    TmpDeviceContext = CreateCompatibleDC(GetDC(0))
-    Bitmap = CreateCompatibleBitmap(GetDC(0), 512, 256)
-    SelectObject TmpDeviceContext, Bitmap
-    CreateContext = TmpDeviceContext
+    Dim hdc As Long
+    Dim BitmapHdc As Long
+    
+    hdc = GetDC(0)
+    BitmapHdc = GetDC(0)
+    CreateContext = CreateCompatibleDC(hdc)
+    Bitmap = CreateCompatibleBitmap(BitmapHdc, 512, 256)
+    SelectObject CreateContext, Bitmap
+    ' Cleanup
     DeleteObject Bitmap
+    DeleteDC hdc
+    DeleteDC BitmapHdc
 End Function
 Public Sub RenderingEngine_createSpriteContext(sprite As SpriteBank)
     'On Error Resume Next
@@ -68,8 +67,6 @@ End Sub
 Public Sub RenderingEngine_draw(sprite As SpriteBank, dstX As Long, dstY As Long)
     BitBlt DeviceContext, dstX, dstY, sprite.getWidth, sprite.getHeight, sprite.getMaskContext(), sprite.getX(), sprite.getY(), vbSrcAnd
     BitBlt DeviceContext, dstX, dstY, sprite.getWidth, sprite.getHeight, sprite.getContext(), sprite.getX(), sprite.getY(), vbSrcPaint
-    
-    'ReleaseDC 0, ScreenDeviceContext
 End Sub
 Public Sub RenderingEngine_Cls(Width As Long, Height As Long)
     Dim Region As Long
@@ -81,22 +78,24 @@ Public Sub RenderingEngine_Cls(Width As Long, Height As Long)
     SetBkMode TmpContext, 1
     
     BeginPath TmpContext
-        Rectangle TmpContext, 0, 0, 512, 256
+        Rectangle TmpContext, 0, 0, Width, Height
     EndPath TmpContext
     Region = PathToRegion(TmpContext)
     
     brush = CreateSolidBrush(RGB(0, 0, 0))
     SelectObject TmpContext, brush
     FillRgn TmpContext, Region, brush
+    DeleteObject brush
+    DeleteObject Region
     
     BitBlt DeviceContext, 0, 0, Width, Height, TmpContext, 0, 0, vbSrcCopy
     DeleteDC TmpContext
-    'DeleteDC DeviceContext
 End Sub
 Public Sub RenderingEngine_DrawToScreen(screen As Long, Width As Long, Height As Long)
     BitBlt screen, 0, 0, Width, Height, DeviceContext, 0, 0, vbSrcCopy
 End Sub
 
-Public Sub RenderingEngine_ClearObjects()
+Public Sub RenderingEngine_ClearObjects(ByRef hdc As Long)
     DeleteDC DeviceContext
+    ReleaseDC 0, hdc
 End Sub
