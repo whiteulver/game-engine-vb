@@ -56,20 +56,16 @@ End Sub
 
 Private Sub initializeListeners(Dispatcher As EventDispatcher)
     Dim bndListener As New BackgroundListener
-    Dim bndAction As New BackgroundAction
     Dim bndSprite As New BackgroundSprite
     
     Rendering.createSpriteContext bndSprite
-    bndAction.initialize bndSprite
-    bndListener.initialize bndAction
+    bndListener.initialize bndSprite
     
-    Dim mvAction As New MoveAction
     Dim mvListener As New MoveListener
     Dim cftSprite As New CraftSprite
     
     Rendering.createSpriteContext cftSprite
-    mvAction.initialize cftSprite
-    mvListener.initialize mvAction
+    mvListener.initialize cftSprite
 
     Dispatcher.addListener "idle", bndListener
     Dispatcher.addListener "idle", mvListener
