@@ -19,14 +19,16 @@ Private EventBucket() As DomainEvent
 Private Dispatcher As EventDispatcher
 Private Keyboard As KeyboardInput
 Private DeviceContextHandler As Long
+Private Boundary As Rectangle
 
 Private Declare Function GetTickCount Lib "kernel32" () As Long
 
-Public Sub initialize(renderIn As RenderingEngine, dispatcherIn As EventDispatcher)
-    Set Rendering = renderIn
-    Rendering.initialize
+Public Sub initialize(RenderIn As RenderingEngine, DispatcherIn As EventDispatcher, BoundaryIn As Rectangle)
+    Set Rendering = RenderIn
+    Set Boundary = BoundaryIn
+    Rendering.initialize Boundary
     
-    Set Dispatcher = dispatcherIn
+    Set Dispatcher = DispatcherIn
     Set Keyboard = New KeyboardInput
 End Sub
 
@@ -81,6 +83,10 @@ End Sub
 
 Public Function getRenderingEngine() As RenderingEngine
     Set getRenderingEngine = Rendering
+End Function
+
+Public Function getBoundary() As Rectangle
+    Set getBoundary = Boundary
 End Function
 
 Private Sub raiseIdleEvent()

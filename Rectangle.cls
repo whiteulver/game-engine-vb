@@ -17,10 +17,10 @@ Private Height As Integer
 Private Width As Integer
 
 Public Sub initialize(LeftIn As Integer, TopIn As Integer, WidthIn As Integer, HeightIn As Integer)
-    Set Left = LeftIn
-    Set Top = TopIn
-    Set Width = WidthIn
-    Set Height = HeightIn
+    Left = LeftIn
+    Top = TopIn
+    Width = WidthIn
+    Height = HeightIn
 End Sub
 
 Public Function getTop() As Integer

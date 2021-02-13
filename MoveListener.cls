@@ -53,16 +53,16 @@ Public Sub Listener_execute(e As DomainEvent)
             dstX = 0
         End If
         
-        If dstX > 512 - sprite.getWidth Then
-            dstX = 512 - sprite.getWidth
+        If dstX > e.getEngine().getBoundary().getWidth() - sprite.getWidth Then
+            dstX = e.getEngine().getBoundary().getWidth() - sprite.getWidth
         End If
         
         If dstY < 0 Then
             dstY = 0
         End If
         
-        If dstY > 240 - sprite.getHeight Then
-            dstY = 240 - sprite.getHeight
+        If dstY > e.getEngine().getBoundary().getHeight() - sprite.getHeight Then
+            dstY = e.getEngine().getBoundary().getHeight() - sprite.getHeight
         End If
 
     End If

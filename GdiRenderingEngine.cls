@@ -32,8 +32,10 @@ Private Declare Function EndPath Lib "gdi32" (ByVal hdc As Long) As Long
 Private Declare Function PathToRegion Lib "gdi32" (ByVal hdc As Long) As Long
 Private Declare Function FillRgn Lib "gdi32" (ByVal hdc As Long, ByVal hRgn As Long, ByVal hBrush As Long) As Long
 Private Declare Function CreateSolidBrush Lib "gdi32" (ByVal crColor As Long) As Long
+Private Boundary As Rectangle
 
-Public Sub RenderingEngine_initialize()
+Public Sub RenderingEngine_initialize(BoundaryIn As Rectangle)
+    Set Boundary = BoundaryIn
     DeviceContext = CreateContext
  End Sub
 Private Function CreateContext() As Long
@@ -44,7 +46,7 @@ Private Function CreateContext() As Long
     hdc = GetDC(0)
     BitmapHdc = GetDC(0)
     CreateContext = CreateCompatibleDC(hdc)
-    Bitmap = CreateCompatibleBitmap(BitmapHdc, 512, 256)
+    Bitmap = CreateCompatibleBitmap(BitmapHdc, Boundary.getWidth(), Boundary.getHeight())
     SelectObject CreateContext, Bitmap
     ' Cleanup
     DeleteObject Bitmap

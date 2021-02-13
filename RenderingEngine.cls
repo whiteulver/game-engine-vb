@@ -11,7 +11,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Public Sub initialize()
+Public Sub initialize(BoundaryIn As Rectangle)
 End Sub
 
 Public Sub createSpriteContext(sprite As SpriteBank)

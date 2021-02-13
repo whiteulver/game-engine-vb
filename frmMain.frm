@@ -25,7 +25,7 @@ Attribute VB_Exposed = False
 Private GameEngine As Engine
 Private Rendering As RenderingEngine
 Private GameEventDispatcher As EventDispatcher
-
+Private Boundary As Rectangle
 
 Private Sub Form_GotFocus()
     Set GameEngine = New Engine
@@ -33,7 +33,7 @@ Private Sub Form_GotFocus()
     Set GameEventDispatcher = New EventDispatcher
     
     initializeListeners GameEventDispatcher
-    GameEngine.initialize Rendering, GameEventDispatcher
+    GameEngine.initialize Rendering, GameEventDispatcher, Boundary
     
     DoEvents
     
@@ -41,8 +41,9 @@ Private Sub Form_GotFocus()
 End Sub
 
 Private Sub Form_Load()
-    'Set GameEventDispatcher = New EventDispatcher
-    Me.Height = 240 * (Height / ScaleHeight)
+    Set Boundary = New Rectangle
+    Boundary.initialize 0, 0, 512, 240
+    Me.Height = Boundary.getHeight() * (Height / ScaleHeight)
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
