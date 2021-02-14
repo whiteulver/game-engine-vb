@@ -29,7 +29,7 @@ Public Function SpriteBank_getMaskFilename() As String
     SpriteBank_getMaskFilename = App.Path & "\resources\fantasy-512-x-256_full.bmp"
 End Function
 
-Public Sub SpriteBank_setContext(context As Long, maskContext As Long)
+Public Sub SpriteBank_setContext(ByRef context As Long, ByRef maskContext As Long)
     SpriteContext = context
     SpriteMaskContext = maskContext
     Bank = 0
@@ -53,14 +53,6 @@ End Function
 Public Function SpriteBank_Y() As Long
     SpriteBank_Y = Bank * Height
 End Function
-
-Public Sub SpriteBank_nextBank()
-    If Bank < MaxBanks Then
-        Bank = Bank + 1
-    Else
-        Bank = 1
-    End If
-End Sub
 
 
 Public Function SpriteBank_Width() As Long

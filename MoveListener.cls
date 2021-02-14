@@ -12,15 +12,15 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Implements Listener
-Private sprite As SpriteBank
+Private pSprite As SpriteBank
 Private dstX As Long
 Private dstY As Long
 Private Const Step As Integer = 5
 
-Public Sub initialize(spriteIn As SpriteBank)
-    Set sprite = spriteIn
-    dstX = (512 / 2) - (sprite.Width() / 2)
-    dstY = 200 - sprite.Height
+Public Sub Initialize(spriteIn As SpriteBank)
+    Set pSprite = spriteIn
+    dstX = (512 / 2) - (pSprite.Width() / 2)
+    dstY = 200 - pSprite.Height
 
 End Sub
 
@@ -53,20 +53,20 @@ Public Sub Listener_execute(e As DomainEvent)
             dstX = 0
         End If
         
-        If dstX > e.getEngine().getBoundary().Width() - sprite.Width Then
-            dstX = e.getEngine().getBoundary().Width() - sprite.Width
+        If dstX > e.getEngine().getBoundary().Width() - pSprite.Width Then
+            dstX = e.getEngine().getBoundary().Width() - pSprite.Width
         End If
         
         If dstY < 0 Then
             dstY = 0
         End If
         
-        If dstY > e.getEngine().getBoundary().Height() - sprite.Height Then
-            dstY = e.getEngine().getBoundary().Height() - sprite.Height
+        If dstY > e.getEngine().getBoundary().Height() - pSprite.Height Then
+            dstY = e.getEngine().getBoundary().Height() - pSprite.Height
         End If
 
     End If
     
-    e.getEngine.getRenderingEngine.draw sprite, dstX, dstY
+    e.getEngine.getRenderingEngine.draw pSprite, dstX, dstY
 End Sub
 

@@ -2,7 +2,7 @@ VERSION 5.00
 Begin VB.Form frmMain 
    Appearance      =   0  'Flat
    AutoRedraw      =   -1  'True
-   BackColor       =   &H80000005&
+   BackColor       =   &H00000000&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Game Engine"
    ClientHeight    =   3840
@@ -33,7 +33,7 @@ Private Sub Form_GotFocus()
     Set GameEventDispatcher = New EventDispatcher
     
     initializeListeners GameEventDispatcher
-    GameEngine.initialize Rendering, GameEventDispatcher, Boundary
+    GameEngine.Initialize Rendering, GameEventDispatcher, Boundary
     
     DoEvents
     
@@ -42,17 +42,15 @@ End Sub
 
 Private Sub Form_Load()
     Set Boundary = New Rectangle
-    Boundary.initialize 0, 0, 512, 256
+    Boundary.Initialize 0, 0, 512, 256
     Me.Height = Boundary.Height() * (Height / ScaleHeight)
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
-    Dim TerminateEvent As DomainEvent
-    Set TerminateEvent = New DomainEvent
-    TerminateEvent.initialize "Terminate", GameEngine
+    Dim TerminateEvent As New DomainEvent
+    TerminateEvent.Initialize "Terminate", GameEngine
     GameEngine.raise TerminateEvent
     GameEngine.terminate
-    End
 End Sub
 
 Private Sub initializeListeners(Dispatcher As EventDispatcher)
@@ -60,13 +58,13 @@ Private Sub initializeListeners(Dispatcher As EventDispatcher)
     Dim bndSprite As New BackgroundSprite
     
     Rendering.createSpriteContext bndSprite
-    bndListener.initialize bndSprite
+    bndListener.Initialize bndSprite
     
     Dim mvListener As New MoveListener
     Dim cftSprite As New CraftSprite
     
     Rendering.createSpriteContext cftSprite
-    mvListener.initialize cftSprite
+    mvListener.Initialize cftSprite
 
     Dispatcher.addListener "idle", bndListener
     Dispatcher.addListener "idle", mvListener

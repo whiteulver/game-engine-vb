@@ -23,10 +23,10 @@ Private Boundary As Rectangle
 
 Private Declare Function GetTickCount Lib "kernel32" () As Long
 
-Public Sub initialize(RenderIn As RenderingEngine, DispatcherIn As EventDispatcher, BoundaryIn As Rectangle)
+Public Sub Initialize(RenderIn As RenderingEngine, DispatcherIn As EventDispatcher, BoundaryIn As Rectangle)
     Set Rendering = RenderIn
     Set Boundary = BoundaryIn
-    Rendering.initialize Boundary
+    Rendering.Initialize Boundary
     
     Set Dispatcher = DispatcherIn
     Set Keyboard = New KeyboardInput
@@ -51,6 +51,7 @@ Public Sub run(source As Form)
         End If
     Loop Until IsRunning = False
     Rendering.ClearObjects (source.hdc)
+    End
 End Sub
 
 Public Sub terminate()
@@ -91,7 +92,7 @@ End Function
 Private Sub raiseIdleEvent()
     Dim IdleEvent As New DomainEvent
     
-    IdleEvent.initialize "idle", Me
+    IdleEvent.Initialize "idle", Me
     raise IdleEvent
 End Sub
 
@@ -101,6 +102,6 @@ Private Sub KeyboardInput()
     
     KeyEvent.setKeyCode Keyboard.getKeyCodes
     
-    KeyEvent.initialize "keydown", Me
+    KeyEvent.Initialize "keydown", Me
     Me.raise KeyEvent
 End Sub

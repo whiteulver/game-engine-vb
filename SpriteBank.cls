@@ -17,7 +17,7 @@ End Function
 Public Function getMaskFilename() As String
 End Function
 
-Public Sub setContext(context As Long, maskContext As Long)
+Public Sub setContext(ByRef context As Long, ByRef maskContext As Long)
 End Sub
 
 Public Function getContext() As Long
@@ -36,6 +36,4 @@ End Function
 Public Function Height() As Long
 End Function
 
-Public Sub nextBank()
-End Sub
 

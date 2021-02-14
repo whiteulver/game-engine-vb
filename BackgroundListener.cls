@@ -12,13 +12,13 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Implements Listener
-Private sprite As SpriteBank
+Private Bank As SpriteBank
 
 
-Public Sub initialize(spriteIn As SpriteBank)
-    Set sprite = spriteIn
+Public Sub Initialize(spriteIn As SpriteBank)
+    Set Bank = spriteIn
 End Sub
 
 Public Sub Listener_execute(e As DomainEvent)
-    e.getEngine.getRenderingEngine.draw sprite, 0, 0
+    e.getEngine.getRenderingEngine.draw Bank, 0, 0
 End Sub

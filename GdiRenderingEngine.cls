@@ -33,9 +33,13 @@ Private Declare Function PathToRegion Lib "gdi32" (ByVal hdc As Long) As Long
 Private Declare Function FillRgn Lib "gdi32" (ByVal hdc As Long, ByVal hRgn As Long, ByVal hBrush As Long) As Long
 Private Declare Function CreateSolidBrush Lib "gdi32" (ByVal crColor As Long) As Long
 Private Boundary As Rectangle
+Private Contexts() As Long
+Private ContextIndex As Integer
+
 
 Public Sub RenderingEngine_initialize(BoundaryIn As Rectangle)
     Set Boundary = BoundaryIn
+    ContenxtIndex = 0
     DeviceContext = CreateContext
  End Sub
 Private Function CreateContext() As Long
@@ -53,9 +57,9 @@ Private Function CreateContext() As Long
     DeleteDC hdc
     DeleteDC BitmapHdc
 End Function
-Public Sub RenderingEngine_createSpriteContext(sprite As SpriteBank)
+Public Sub RenderingEngine_createSpriteContext(Bank As SpriteBank)
     'On Error Resume Next
-    Dim context As Long
+    Dim Context As Long
     Dim maskContext As Long
     Dim cHdc As Long
     Dim mHdc As Long
@@ -63,20 +67,23 @@ Public Sub RenderingEngine_createSpriteContext(sprite As SpriteBank)
     cHdc = GetDC(0)
     mHdc = GetDC(0)
     
-    context = CreateCompatibleDC(cHdc)
+    Context = CreateCompatibleDC(cHdc)
     maskContext = CreateCompatibleDC(mHdc)
-    SelectObject context, LoadPicture(sprite.getFilename)
-    SelectObject maskContext, LoadPicture(sprite.getMaskFilename)
+    SelectObject Context, LoadPicture(Bank.getFilename)
+    SelectObject maskContext, LoadPicture(Bank.getMaskFilename)
     DeleteDC cHdc
     DeleteDC mHdc
-    sprite.setContext context, maskContext
+    Bank.setContext Context, maskContext
+    AddContext Context
+    AddContext maskContext
     
 End Sub
 
-Public Sub RenderingEngine_draw(sprite As SpriteBank, dstX As Long, dstY As Long)
-    BitBlt DeviceContext, dstX, dstY, sprite.Width, sprite.Height, sprite.getMaskContext(), sprite.X, sprite.Y, vbSrcAnd
-    BitBlt DeviceContext, dstX, dstY, sprite.Width, sprite.Height, sprite.getContext(), sprite.X, sprite.Y, vbSrcPaint
+Public Sub RenderingEngine_draw(spriteIn As SpriteBank, dstX As Long, dstY As Long)
+    BitBlt DeviceContext, dstX, dstY, spriteIn.Width, spriteIn.Height, spriteIn.getMaskContext(), spriteIn.X, spriteIn.Y, vbSrcAnd
+    BitBlt DeviceContext, dstX, dstY, spriteIn.Width, spriteIn.Height, spriteIn.getContext(), spriteIn.X, spriteIn.Y, vbSrcPaint
 End Sub
+
 Public Sub RenderingEngine_Cls()
     Dim Region As Long
     Dim TmpContext As Long
@@ -100,11 +107,22 @@ Public Sub RenderingEngine_Cls()
     BitBlt DeviceContext, 0, 0, Boundary.Width(), Boundary.Height(), TmpContext, 0, 0, vbSrcCopy
     DeleteDC TmpContext
 End Sub
+
 Public Sub RenderingEngine_DrawToScreen(screen As Long, Width As Long, Height As Long)
     BitBlt screen, 0, 0, Width, Height, DeviceContext, 0, 0, vbSrcCopy
 End Sub
 
 Public Sub RenderingEngine_ClearObjects(ByRef hdc As Long)
+    Dim i As Long
+    For i = 0 To UBound(Contexts)
+        DeleteDC Contexts(i)
+    Next
     DeleteDC DeviceContext
     ReleaseDC 0, hdc
+End Sub
+
+Private Sub AddContext(Context As Long)
+    ReDim Preserve Contexts(ContextIndex)
+    Contexts(index) = Context
+    ContextIndex = ContextIndex + 1
 End Sub

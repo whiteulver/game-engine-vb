@@ -16,25 +16,30 @@ Private pTop As Integer
 Private pHeight As Integer
 Private pWidth As Integer
 
-Public Sub initialize(LeftIn As Integer, TopIn As Integer, WidthIn As Integer, HeightIn As Integer)
+Public Sub Initialize(LeftIn As Integer, TopIn As Integer, WidthIn As Integer, HeightIn As Integer)
     pLeft = LeftIn
     pTop = TopIn
     pWidth = WidthIn
     pHeight = HeightIn
 End Sub
 
-Public Function Top() As Integer
+Public Property Get Top() As Integer
     Top = pTop
-End Function
+End Property
 
-Public Function Left() As Integer
+Public Property Get Left() As Integer
     Left = pLeft
-End Function
+End Property
 
-Public Function Width() As Integer
+Public Property Get Width() As Integer
     Width = pWidth
-End Function
+End Property
 
-Public Function Height() As Integer
+Public Property Get Height() As Integer
     Height = pHeight
-End Function
+End Property
+
+Public Sub Move(LeftIn As Integer, TopIn As Integer)
+    pLeft = LeftIn
+    pTop = TopIn
+End Sub
