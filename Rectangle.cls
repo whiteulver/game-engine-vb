@@ -11,30 +11,30 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Private Left As Integer
-Private Top As Integer
-Private Height As Integer
-Private Width As Integer
+Private pLeft As Integer
+Private pTop As Integer
+Private pHeight As Integer
+Private pWidth As Integer
 
 Public Sub initialize(LeftIn As Integer, TopIn As Integer, WidthIn As Integer, HeightIn As Integer)
-    Left = LeftIn
-    Top = TopIn
-    Width = WidthIn
-    Height = HeightIn
+    pLeft = LeftIn
+    pTop = TopIn
+    pWidth = WidthIn
+    pHeight = HeightIn
 End Sub
 
-Public Function getTop() As Integer
-    getTop = Top
+Public Function Top() As Integer
+    Top = pTop
 End Function
 
-Public Function getLeft() As Integer
-    getLeft = Left
+Public Function Left() As Integer
+    Left = pLeft
 End Function
 
-Public Function getWidth() As Integer
-    getWidth = Width
+Public Function Width() As Integer
+    Width = pWidth
 End Function
 
-Public Function getHeight() As Integer
-    getHeight = Height
+Public Function Height() As Integer
+    Height = pHeight
 End Function

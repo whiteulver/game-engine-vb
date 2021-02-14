@@ -42,11 +42,10 @@ Public Sub run(source As Form)
         T2 = GetTickCount
         If (T2 - T1) >= FrameRate Then
             KeyboardInput
-            Rendering.Cls 640, 240
-            ' source.Cls
+            Rendering.Cls
             raiseIdleEvent
             DispatchEvents
-            Rendering.DrawToScreen source.hdc, 640, 240
+            Rendering.DrawToScreen source.hdc, Boundary.Width(), Boundary.Height()
             source.Refresh
             T1 = GetTickCount
         End If

@@ -42,8 +42,8 @@ End Sub
 
 Private Sub Form_Load()
     Set Boundary = New Rectangle
-    Boundary.initialize 0, 0, 512, 240
-    Me.Height = Boundary.getHeight() * (Height / ScaleHeight)
+    Boundary.initialize 0, 0, 512, 256
+    Me.Height = Boundary.Height() * (Height / ScaleHeight)
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)

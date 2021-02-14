@@ -45,24 +45,24 @@ Public Function SpriteBank_getMaskContext() As Long
     SpriteBank_getMaskContext = SpriteMaskContext
 End Function
 
-Public Function SpriteBank_getX() As Long
-    SpriteBank_getX = 0
+Public Function SpriteBank_X() As Long
+    SpriteBank_X = 0
 End Function
 
-Public Function SpriteBank_getY() As Long
-    SpriteBank_getY = Bank * Height
+Public Function SpriteBank_Y() As Long
+    SpriteBank_Y = Bank * Height
 End Function
 
 Public Sub SpriteBank_nextBank()
     Bank = 0
 End Sub
 
-Public Function SpriteBank_getWidth() As Long
-    SpriteBank_getWidth = Width
+Public Function SpriteBank_Width() As Long
+    SpriteBank_Width = Width
 End Function
 
-Public Function SpriteBank_getHeight() As Long
-    SpriteBank_getHeight = Height
+Public Function SpriteBank_Height() As Long
+    SpriteBank_Height = Height
 End Function
 
 

@@ -19,8 +19,8 @@ Private Const Step As Integer = 5
 
 Public Sub initialize(spriteIn As SpriteBank)
     Set sprite = spriteIn
-    dstX = (512 / 2) - (sprite.getWidth() / 2)
-    dstY = 200 - sprite.getHeight
+    dstX = (512 / 2) - (sprite.Width() / 2)
+    dstY = 200 - sprite.Height
 
 End Sub
 
@@ -53,16 +53,16 @@ Public Sub Listener_execute(e As DomainEvent)
             dstX = 0
         End If
         
-        If dstX > e.getEngine().getBoundary().getWidth() - sprite.getWidth Then
-            dstX = e.getEngine().getBoundary().getWidth() - sprite.getWidth
+        If dstX > e.getEngine().getBoundary().Width() - sprite.Width Then
+            dstX = e.getEngine().getBoundary().Width() - sprite.Width
         End If
         
         If dstY < 0 Then
             dstY = 0
         End If
         
-        If dstY > e.getEngine().getBoundary().getHeight() - sprite.getHeight Then
-            dstY = e.getEngine().getBoundary().getHeight() - sprite.getHeight
+        If dstY > e.getEngine().getBoundary().Height() - sprite.Height Then
+            dstY = e.getEngine().getBoundary().Height() - sprite.Height
         End If
 
     End If

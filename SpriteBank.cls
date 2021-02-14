@@ -24,16 +24,16 @@ Public Function getContext() As Long
 End Function
 Public Function getMaskContext() As Long
 End Function
-Public Function getX() As Long
+Public Function X() As Long
 End Function
 
-Public Function getY() As Long
+Public Function Y() As Long
 End Function
 
-Public Function getWidth() As Long
+Public Function Width() As Long
 End Function
 
-Public Function getHeight() As Long
+Public Function Height() As Long
 End Function
 
 Public Sub nextBank()

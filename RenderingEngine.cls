@@ -23,7 +23,7 @@ End Sub
 Public Sub DrawToScreen(screen As Long, Width As Long, Height As Long)
 End Sub
 
-Public Sub Cls(Width As Long, Height As Long)
+Public Sub Cls()
 End Sub
 
 Public Sub ClearObjects(ByRef hdc As Long)
