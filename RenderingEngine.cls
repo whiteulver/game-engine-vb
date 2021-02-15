@@ -17,7 +17,7 @@ End Sub
 Public Sub createSpriteContext(Bank As SpriteBank)
 End Sub
 
-Public Sub draw(Bank As SpriteBank, dstX As Long, dstY As Long)
+Public Sub Draw(spr As sprite)
 End Sub
 
 Public Sub DrawToScreen(screen As Long, Width As Long, Height As Long)

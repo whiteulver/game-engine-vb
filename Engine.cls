@@ -28,6 +28,7 @@ Public Sub Initialize(RenderIn As RenderingEngine, DispatcherIn As EventDispatch
     Set Rendering = RenderIn
     Set Boundary = BoundaryIn
     Set State = StateIn
+    State.Initialize Rendering
     Rendering.Initialize Boundary
     
     Set Dispatcher = DispatcherIn
@@ -43,19 +44,18 @@ Public Sub run(source As Form)
         DoEvents
         T2 = GetTickCount
         If (T2 - T1) >= FrameRate Then
-            ListenKeyboard
             Rendering.Cls
-            raiseIdleEvent
-            DispatchEvents
+            State.Listen KeyboardEvent
+            State.Update T2
+            State.Draw
             Rendering.DrawToScreen source.hdc, Boundary.Width(), Boundary.Height()
             source.Refresh
+            Set State = State.State
             T1 = GetTickCount
         End If
     Loop Until IsRunning = False
     Rendering.ClearObjects (source.hdc)
-    End
 End Sub
-
 Public Sub terminate()
     IsRunning = False
 End Sub
@@ -73,16 +73,6 @@ Public Sub raise(e As DomainEvent)
     Set EventBucket(index) = e
 End Sub
 
-Private Sub DispatchEvents()
-    If Not IsEmpty(EventBucket) Then
-        Dim i As Integer
-        For i = 0 To UBound(EventBucket)
-            Dispatcher.dispatch EventBucket(i)
-        Next
-        Erase EventBucket
-    End If
-End Sub
-
 Public Function getRenderingEngine() As RenderingEngine
     Set getRenderingEngine = Rendering
 End Function
@@ -91,19 +81,12 @@ Public Function getBoundary() As Rectangle
     Set getBoundary = Boundary
 End Function
 
-Private Sub raiseIdleEvent()
-    Dim IdleEvent As New DomainEvent
-    
-    IdleEvent.Initialize "idle", Me
-    raise IdleEvent
-End Sub
-
-Private Sub ListenKeyboard()
+Private Function KeyboardEvent() As DomainEvent
     Dim KeyEvent As DomainEvent
     Set KeyEvent = New DomainEvent
     
     KeyEvent.setKeyCode Keyboard.getKeyCodes
     
     KeyEvent.Initialize "keydown", Me
-    Me.raise KeyEvent
-End Sub
+    Set KeyboardEvent = KeyEvent
+End Function

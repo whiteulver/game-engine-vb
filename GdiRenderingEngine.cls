@@ -59,7 +59,7 @@ Private Function CreateContext() As Long
 End Function
 Public Sub RenderingEngine_createSpriteContext(Bank As SpriteBank)
     'On Error Resume Next
-    Dim Context As Long
+    Dim context As Long
     Dim maskContext As Long
     Dim cHdc As Long
     Dim mHdc As Long
@@ -67,21 +67,23 @@ Public Sub RenderingEngine_createSpriteContext(Bank As SpriteBank)
     cHdc = GetDC(0)
     mHdc = GetDC(0)
     
-    Context = CreateCompatibleDC(cHdc)
+    context = CreateCompatibleDC(cHdc)
     maskContext = CreateCompatibleDC(mHdc)
-    SelectObject Context, LoadPicture(Bank.getFilename)
+    SelectObject context, LoadPicture(Bank.getFilename)
     SelectObject maskContext, LoadPicture(Bank.getMaskFilename)
     DeleteDC cHdc
     DeleteDC mHdc
-    Bank.setContext Context, maskContext
-    AddContext Context
+    Bank.setContext context, maskContext
+    AddContext context
     AddContext maskContext
     
 End Sub
 
-Public Sub RenderingEngine_draw(spriteIn As SpriteBank, dstX As Long, dstY As Long)
-    BitBlt DeviceContext, dstX, dstY, spriteIn.Width, spriteIn.Height, spriteIn.getMaskContext(), spriteIn.X, spriteIn.Y, vbSrcAnd
-    BitBlt DeviceContext, dstX, dstY, spriteIn.Width, spriteIn.Height, spriteIn.getContext(), spriteIn.X, spriteIn.Y, vbSrcPaint
+Public Sub RenderingEngine_Draw(spr As Sprite)
+    BitBlt DeviceContext, spr.Rect.Left, spr.Rect.Top, spr.Rect.Width, spr.Rect.Height, spr.Bank.getMaskContext(), spr.Bank.X, spr.Bank.Y, vbSrcAnd
+    BitBlt DeviceContext, spr.Rect.Left, spr.Rect.Top, spr.Rect.Width, spr.Rect.Height, spr.Bank.getContext(), spr.Bank.X, spr.Bank.Y, vbSrcPaint
+    'BitBlt DeviceContext, dstX, dstY, spriteIn.Width, spriteIn.Height, spriteIn.getMaskContext(), spriteIn.X, spriteIn.Y, vbSrcAnd
+    'BitBlt DeviceContext, dstX, dstY, spriteIn.Width, spriteIn.Height, spriteIn.getContext(), spriteIn.X, spriteIn.Y, vbSrcPaint
 End Sub
 
 Public Sub RenderingEngine_Cls()
@@ -121,8 +123,8 @@ Public Sub RenderingEngine_ClearObjects(ByRef hdc As Long)
     ReleaseDC 0, hdc
 End Sub
 
-Private Sub AddContext(Context As Long)
+Private Sub AddContext(context As Long)
     ReDim Preserve Contexts(ContextIndex)
-    Contexts(index) = Context
+    Contexts(index) = context
     ContextIndex = ContextIndex + 1
 End Sub

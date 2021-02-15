@@ -34,12 +34,12 @@ Private Sub Form_GotFocus()
     Set State = New DemoState
     Set GameEventDispatcher = New EventDispatcher
     
-    initializeListeners GameEventDispatcher
     GameEngine.Initialize Rendering, GameEventDispatcher, Boundary, State
     
     DoEvents
     
     GameEngine.run frmMain
+    End
 End Sub
 
 Private Sub Form_Load()
@@ -49,26 +49,5 @@ Private Sub Form_Load()
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
-    Dim TerminateEvent As New DomainEvent
-    TerminateEvent.Initialize "Terminate", GameEngine
-    GameEngine.raise TerminateEvent
     GameEngine.terminate
-End Sub
-
-Private Sub initializeListeners(Dispatcher As EventDispatcher)
-    Dim bndListener As New BackgroundListener
-    Dim bndSprite As New BackgroundSprite
-    
-    Rendering.createSpriteContext bndSprite
-    bndListener.Initialize bndSprite
-    
-    Dim mvListener As New MoveListener
-    Dim cftSprite As New CraftSprite
-    
-    Rendering.createSpriteContext cftSprite
-    mvListener.Initialize cftSprite
-
-    Dispatcher.addListener "idle", bndListener
-    Dispatcher.addListener "idle", mvListener
-    Dispatcher.addListener "keydown", mvListener
 End Sub

@@ -17,6 +17,9 @@ End Function
 Public Sub Update(Time As Long)
 End Sub
 
+Public Sub Draw()
+End Sub
+
 Public Sub Listen(GameEvent As DomainEvent)
 End Sub
 
