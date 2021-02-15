@@ -21,11 +21,10 @@ Public Sub Initialize(spriteIn As SpriteBank)
     Set pSprite = spriteIn
     dstX = (512 / 2) - (pSprite.Width() / 2)
     dstY = 200 - pSprite.Height
-
 End Sub
 
 Public Sub Listener_execute(e As DomainEvent)
-    If e.getName = "keydown" Then
+    If e.Name = "keydown" Then
         Dim KeyCodes() As Integer
         KeyCodes = e.getKeyCode
         

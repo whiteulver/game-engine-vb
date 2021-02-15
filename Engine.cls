@@ -20,12 +20,14 @@ Private Dispatcher As EventDispatcher
 Private Keyboard As KeyboardInput
 Private DeviceContextHandler As Long
 Private Boundary As Rectangle
+Private State As GameState
 
 Private Declare Function GetTickCount Lib "kernel32" () As Long
 
-Public Sub Initialize(RenderIn As RenderingEngine, DispatcherIn As EventDispatcher, BoundaryIn As Rectangle)
+Public Sub Initialize(RenderIn As RenderingEngine, DispatcherIn As EventDispatcher, BoundaryIn As Rectangle, StateIn As GameState)
     Set Rendering = RenderIn
     Set Boundary = BoundaryIn
+    Set State = StateIn
     Rendering.Initialize Boundary
     
     Set Dispatcher = DispatcherIn
@@ -41,7 +43,7 @@ Public Sub run(source As Form)
         DoEvents
         T2 = GetTickCount
         If (T2 - T1) >= FrameRate Then
-            KeyboardInput
+            ListenKeyboard
             Rendering.Cls
             raiseIdleEvent
             DispatchEvents
@@ -96,7 +98,7 @@ Private Sub raiseIdleEvent()
     raise IdleEvent
 End Sub
 
-Private Sub KeyboardInput()
+Private Sub ListenKeyboard()
     Dim KeyEvent As DomainEvent
     Set KeyEvent = New DomainEvent
     

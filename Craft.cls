@@ -11,7 +11,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Implements sprite
+Implements Sprite
 Private pBank As SpriteBank
 Private pRect As Rectangle
 
@@ -38,3 +38,6 @@ End Property
 Public Property Get Sprite_Rect() As Rectangle
     Rect = pRect
 End Property
+
+Public Sub Sprite_Listen(GameEventIn As DomainEvent)
+End Sub

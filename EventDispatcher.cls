@@ -18,7 +18,7 @@ Public Sub dispatch(e As DomainEvent)
     If Not IsEmpty(listeners) Then
         Dim i As Long
         For i = 0 To UBound(listeners)
-            If listenersName(i) = e.getName() Then
+            If listenersName(i) = e.Name Then
                 listeners(i).execute e
             End If
         Next

@@ -28,3 +28,6 @@ End Property
 
 Public Property Get Rect() As Rectangle
 End Property
+
+Public Sub Listen(GameEventIn As DomainEvent)
+End Sub

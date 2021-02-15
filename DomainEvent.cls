@@ -11,18 +11,18 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Private name As String
+Private pName As String
 Private GameEngine As Engine
 Private KeyCode() As Integer
 
-Public Sub initialize(EventName As String, e As Engine)
-    name = EventName
+Public Sub Initialize(EventName As String, e As Engine)
+    pName = EventName
     Set GameEngine = e
 End Sub
 
-Public Function getName() As String
-    getName = name
-End Function
+Public Property Get Name() As String
+    Name = pName
+End Property
 
 Public Function getEngine() As Engine
     Set getEngine = GameEngine

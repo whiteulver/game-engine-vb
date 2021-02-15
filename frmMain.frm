@@ -30,10 +30,12 @@ Private Boundary As Rectangle
 Private Sub Form_GotFocus()
     Set GameEngine = New Engine
     Set Rendering = New GdiRenderingEngine
+    Dim State As GameState
+    Set State = New DemoState
     Set GameEventDispatcher = New EventDispatcher
     
     initializeListeners GameEventDispatcher
-    GameEngine.Initialize Rendering, GameEventDispatcher, Boundary
+    GameEngine.Initialize Rendering, GameEventDispatcher, Boundary, State
     
     DoEvents
     
