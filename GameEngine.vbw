@@ -1,4 +1,4 @@
-frmMain = 44, 44, 870, 491, , -312, 108, 514, 488, C
+frmMain = 44, 44, 870, 491, Z, -312, 108, 514, 488, C
 Engine = 46, 58, 872, 431, 
 SpriteBank = 0, 0, 826, 373, C
 DomainEvent = 110, 110, 936, 490, C
@@ -11,8 +11,8 @@ KeyboardInput = 0, 0, 1036, 576, C
 Rectangle = 110, 145, 734, 484, 
 Sprite = 22, 22, 602, 368, 
 Craft = 66, 66, 652, 412, 
-GameState = 110, 110, 1177, 752, 
-DemoState = 88, 88, 1155, 730, 
+GameState = 110, 110, 1146, 722, 
+DemoState = 88, 88, 1124, 700, 
 Background = 66, 87, 965, 617, 
-Animation = 110, 145, 1008, 675, Z
+Animation = 110, 145, 1008, 675, 
 Action = 132, 174, 1030, 704, 

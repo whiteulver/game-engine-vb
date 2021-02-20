@@ -40,6 +40,12 @@ Private Sub Form_GotFocus()
     End
 End Sub
 
+Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
+    If KeyCode = vbKeyEscape Then
+        Form_Unload 0
+    End If
+End Sub
+
 Private Sub Form_Load()
     Set Boundary = New Rectangle
     Boundary.initialize 0, 0, 512, 256

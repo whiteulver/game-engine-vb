@@ -6,19 +6,22 @@ BEGIN
   DataSourceBehavior  = 0  'vbNone
   MTSTransactionMode  = 0  'NotAnMTSObject
 END
-Attribute VB_Name = "Action"
+Attribute VB_Name = "SpriteSheet"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Private Tick As Long
+Private Filename As String
+Private MaskFilename As String
+Private Render As RenderingEngine
 
-Public Sub initialize()
-
+Public Sub Initialize(FilenameIn As String, MaskFilename As String, RenderIn As RenderingEngine)
+    Filename = FilenameIn
+    MaskFilename = MaskFilenameIn
+    Set Render = RenderIn
 End Sub
 
-Public Function NextFrame() As Integer
+Private Sub Build()
 
-End Function
-
+End Sub
 

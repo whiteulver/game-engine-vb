@@ -12,7 +12,7 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Private IsRunning As Boolean
-Private Const FrameRate = 15
+Private Const FrameRate = 16
 Private Sprites() As SpriteBank
 Private Rendering As RenderingEngine
 Private Keyboard As KeyboardInput
@@ -22,37 +22,42 @@ Private State As GameState
 
 Private Declare Function GetTickCount Lib "kernel32" () As Long
 
-Public Sub initialize(RenderIn As RenderingEngine, BoundaryIn As Rectangle, StateIn As GameState)
+Public Sub Initialize(RenderIn As RenderingEngine, BoundaryIn As Rectangle, StateIn As GameState)
     Set Rendering = RenderIn
     Set Boundary = BoundaryIn
     Set State = StateIn
-    State.initialize Rendering
-    Rendering.initialize Boundary
+    State.Initialize Rendering
+    Rendering.Initialize Boundary
 
     Set Keyboard = New KeyboardInput
 End Sub
 
 Public Sub run(source As Form)
-    Dim T1 As Long, T2 As Long
-    
+    ' Game loop tutorial at https://gameprogrammingpatterns.com/game-loop.html
+    Dim T1 As Long, T2 As Long, Lag As Long, Elapsed As Long
     IsRunning = True
     T1 = GetTickCount
+    Lag = 0
     Do
         DoEvents
         T2 = GetTickCount
-        Debug.Print Elapsed
-        If (T2 - T1) >= FrameRate Then
-            Rendering.Cls
-            State.Listen KeyboardEvent
-            State.Update T2
-            State.Draw
-            Rendering.DrawToScreen source.hdc, Boundary.Width(), Boundary.Height()
-            source.Refresh
-            Set State = State.State
-            T1 = GetTickCount
-        End If
+        Elapsed = T2 - T1
+        T1 = T2
+        Lag = Lag + Elapsed
+        State.Listen KeyboardEvent
+        Do
+            DoEvents
+            Lag = Lag - FrameRate
+        Loop Until Lag < FrameRate Or IsRunning = False
+        State.Update T2
+        ' Draw
+        Rendering.Cls
+        State.Draw
+        Rendering.DrawToScreen source.hDC, Boundary.Width(), Boundary.Height()
+        source.Refresh
+        Set State = State.State
     Loop Until IsRunning = False
-    Rendering.ClearObjects (source.hdc)
+    Rendering.ClearObjects (source.hDC)
 End Sub
 Public Sub terminate()
     IsRunning = False
@@ -72,6 +77,6 @@ Private Function KeyboardEvent() As DomainEvent
     
     KeyEvent.setKeyCode Keyboard.getKeyCodes
     
-    KeyEvent.initialize "keydown", Me
+    KeyEvent.Initialize "keydown", Me
     Set KeyboardEvent = KeyEvent
 End Function

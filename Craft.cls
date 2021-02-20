@@ -72,7 +72,7 @@ End Sub
 Public Sub Sprite_Initialize(ByRef Bank As SpriteBank)
     Set pBank = Bank
     Set pRect = New Rectangle
-    pRect.Initialize 0, 0, pBank.Width, pBank.Height
+    pRect.initialize 0, 0, pBank.Width, pBank.Height
 End Sub
 
 Public Property Get Sprite_Bank() As SpriteBank
