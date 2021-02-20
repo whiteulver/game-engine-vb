@@ -43,6 +43,7 @@ Public Sub run(source As Form)
     Do
         DoEvents
         T2 = GetTickCount
+        Debug.Print Elapsed
         If (T2 - T1) >= FrameRate Then
             Rendering.Cls
             State.Listen KeyboardEvent

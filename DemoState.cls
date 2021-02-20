@@ -16,8 +16,8 @@ Implements GameState
 Private Render As RenderingEngine
 Private GameEvents() As DomainEvent
 Private GameEvent As DomainEvent
-Private cftSprite As Craft
-Private bgnSprite As Background
+Private cftSprite As Sprite
+Private bgnSprite As Sprite
 
 
 Public Sub GameState_Initialize(RenderIn As RenderingEngine)
@@ -28,13 +28,13 @@ Public Sub GameState_Initialize(RenderIn As RenderingEngine)
     Set bgnSprite = New Background
     Dim bgnBank As New BackgroundSprite
     Render.createSpriteContext bgnBank
-    bgnSprite.Sprite_Initialize bgnBank
+    bgnSprite.Initialize bgnBank
 
     ' Load Craft
     Set cftSprite = New Craft
     Dim cftBank As New CraftSprite
     Render.createSpriteContext cftBank
-    cftSprite.Sprite_Initialize cftBank
+    cftSprite.Initialize cftBank
 
 End Sub
 
@@ -45,8 +45,8 @@ End Function
 
 
 Public Sub GameState_Update(Time As Long)
-    cftSprite.Sprite_Listen GameEvent
-    cftSprite.Sprite_Update Time
+    cftSprite.Listen GameEvent
+    cftSprite.Update Time
 End Sub
 
 Public Sub GameState_Draw()
