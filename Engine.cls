@@ -15,8 +15,6 @@ Private IsRunning As Boolean
 Private Const FrameRate = 15
 Private Sprites() As SpriteBank
 Private Rendering As RenderingEngine
-Private EventBucket() As DomainEvent
-Private Dispatcher As EventDispatcher
 Private Keyboard As KeyboardInput
 Private DeviceContextHandler As Long
 Private Boundary As Rectangle
@@ -24,14 +22,13 @@ Private State As GameState
 
 Private Declare Function GetTickCount Lib "kernel32" () As Long
 
-Public Sub Initialize(RenderIn As RenderingEngine, DispatcherIn As EventDispatcher, BoundaryIn As Rectangle, StateIn As GameState)
+Public Sub initialize(RenderIn As RenderingEngine, BoundaryIn As Rectangle, StateIn As GameState)
     Set Rendering = RenderIn
     Set Boundary = BoundaryIn
     Set State = StateIn
-    State.Initialize Rendering
-    Rendering.Initialize Boundary
-    
-    Set Dispatcher = DispatcherIn
+    State.initialize Rendering
+    Rendering.initialize Boundary
+
     Set Keyboard = New KeyboardInput
 End Sub
 
@@ -61,19 +58,6 @@ Public Sub terminate()
     IsRunning = False
 End Sub
 
-Public Sub raise(e As DomainEvent)
-    Dim index As Long
-    
-    If IsEmpty(EventBucket) Then
-        index = 0
-    Else
-        index = UBound(EventBucket) + 1
-    End If
-    ReDim Preserve EventBucket(index)
-    
-    Set EventBucket(index) = e
-End Sub
-
 Public Function getRenderingEngine() As RenderingEngine
     Set getRenderingEngine = Rendering
 End Function
@@ -88,6 +72,6 @@ Private Function KeyboardEvent() As DomainEvent
     
     KeyEvent.setKeyCode Keyboard.getKeyCodes
     
-    KeyEvent.Initialize "keydown", Me
+    KeyEvent.initialize "keydown", Me
     Set KeyboardEvent = KeyEvent
 End Function

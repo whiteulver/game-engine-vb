@@ -24,7 +24,6 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Private GameEngine As Engine
 Private Rendering As RenderingEngine
-Private GameEventDispatcher As EventDispatcher
 Private Boundary As Rectangle
 
 Private Sub Form_GotFocus()
@@ -32,9 +31,8 @@ Private Sub Form_GotFocus()
     Set Rendering = New GdiRenderingEngine
     Dim State As GameState
     Set State = New DemoState
-    Set GameEventDispatcher = New EventDispatcher
     
-    GameEngine.Initialize Rendering, GameEventDispatcher, Boundary, State
+    GameEngine.initialize Rendering, Boundary, State
     
     DoEvents
     
@@ -44,7 +42,7 @@ End Sub
 
 Private Sub Form_Load()
     Set Boundary = New Rectangle
-    Boundary.Initialize 0, 0, 512, 256
+    Boundary.initialize 0, 0, 512, 256
     Me.Height = Boundary.Height() * (Height / ScaleHeight)
 End Sub
 
