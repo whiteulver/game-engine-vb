@@ -11,10 +11,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-
 Implements RenderingEngine
-
-Private DeviceContext As Long
 
 Private Declare Function GetDC Lib "user32" (ByVal hwnd As Long) As Long
 Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
@@ -33,83 +30,81 @@ Private Declare Function EndPath Lib "gdi32" (ByVal hDC As Long) As Long
 Private Declare Function PathToRegion Lib "gdi32" (ByVal hDC As Long) As Long
 Private Declare Function FillRgn Lib "gdi32" (ByVal hDC As Long, ByVal hRgn As Long, ByVal hBrush As Long) As Long
 Private Declare Function CreateSolidBrush Lib "gdi32" (ByVal crColor As Long) As Long
+
+Private DeviceContext As Long
 Private Boundary As Rectangle
 Private Contexts() As Long
-Private ContextIndex As Integer
-
+Private ContextIndex As Long
+Private RegisteredContexts() As Long
+Private RegisteredMaskContexts() As Long
 
 Public Sub RenderingEngine_initialize(BoundaryIn As Rectangle)
     Set Boundary = BoundaryIn
-    ContenxtIndex = 0
     DeviceContext = CreateContext
  End Sub
-Private Function CreateContext() As Long
+
+Private Function CreateContext(Optional SizeIn As Rectangle) As Long
     Dim Bitmap As Long
     Dim hDC As Long
-    Dim BitmapHdc As Long
+    Dim BitmaphDC As Long
+    Dim Size As Rectangle
+    
+    If SizeIn Is Nothing Then
+        Set Size = Boundary
+    Else
+        Set Size = SizeIn
+    End If
     
     hDC = GetDC(0)
-    BitmapHdc = GetDC(0)
+    BitmaphDC = GetDC(0)
     CreateContext = CreateCompatibleDC(hDC)
-    Bitmap = CreateCompatibleBitmap(BitmapHdc, Boundary.Width(), Boundary.Height())
+    Bitmap = CreateCompatibleBitmap(BitmaphDC, Size.Width(), Size.Height())
     SelectObject CreateContext, Bitmap
     ' Cleanup
     DeleteObject Bitmap
     DeleteDC hDC
-    DeleteDC BitmapHdc
+    DeleteDC BitmaphDC
 End Function
 
-Public Sub RenderingEngine_createSpriteContext(Bank As SpriteBank)
-    'On Error Resume Next
-    Dim context As Long
-    Dim maskContext As Long
-    Dim cHdc As Long
-    Dim mHdc As Long
+' Gets the filepath of an image and creates a hDC context
+Private Function RenderingEngine_CreateImageContext(Filepath As String) As Long
+    Dim context As Long, hDC As Long
     
-    cHdc = GetDC(0)
-    mHdc = GetDC(0)
-    
-    context = CreateCompatibleDC(cHdc)
-    maskContext = CreateCompatibleDC(mHdc)
-    SelectObject context, LoadPicture(Bank.getFilename)
-    SelectObject maskContext, LoadPicture(Bank.getMaskFilename)
-    DeleteDC cHdc
-    DeleteDC mHdc
-    Bank.setContext context, maskContext
+    hDC = GetDC(0)
+    context = CreateCompatibleDC(hDC)
+    SelectObject context, LoadPicture(Filepath)
+    DeleteDC hDC
     AddContext context
-    AddContext maskContext
-    
-End Sub
+    RenderingEngine_CreateImageContext = context
+End Function
 
 Public Sub RenderingEngine_Draw(spr As Sprite)
     BitBlt DeviceContext, spr.Rect.Left, spr.Rect.Top, spr.Rect.Width, spr.Rect.Height, spr.Bank.getMaskContext(), spr.Bank.X, spr.Bank.Y, vbSrcAnd
     BitBlt DeviceContext, spr.Rect.Left, spr.Rect.Top, spr.Rect.Width, spr.Rect.Height, spr.Bank.getContext(), spr.Bank.X, spr.Bank.Y, vbSrcPaint
-    'BitBlt DeviceContext, dstX, dstY, spriteIn.Width, spriteIn.Height, spriteIn.getMaskContext(), spriteIn.X, spriteIn.Y, vbSrcAnd
-    'BitBlt DeviceContext, dstX, dstY, spriteIn.Width, spriteIn.Height, spriteIn.getContext(), spriteIn.X, spriteIn.Y, vbSrcPaint
 End Sub
 
 Public Sub RenderingEngine_Cls()
     Dim Region As Long
-    Dim TmpContext As Long
+    Dim tmpContext As Long
     
-    TmpContext = CreateContext
+    tmpContext = CreateContext
     
-    SetBkColor TmpContext, RGB(0, 0, 0)
-    SetBkMode TmpContext, 1
+    SetBkColor tmpContext, RGB(0, 0, 0)
+    SetBkMode tmpContext, 1
     
-    BeginPath TmpContext
-        Rectangle TmpContext, 0, 0, Boundary.Width(), Boundary.Height()
-    EndPath TmpContext
-    Region = PathToRegion(TmpContext)
+    BeginPath tmpContext
+        Rectangle tmpContext, 0, 0, Boundary.Width(), Boundary.Height()
+    EndPath tmpContext
+    Region = PathToRegion(tmpContext)
     
     brush = CreateSolidBrush(RGB(0, 0, 0))
-    SelectObject TmpContext, brush
-    FillRgn TmpContext, Region, brush
+    SelectObject tmpContext, brush
+    FillRgn tmpContext, Region, brush
     DeleteObject brush
     DeleteObject Region
     
-    BitBlt DeviceContext, 0, 0, Boundary.Width(), Boundary.Height(), TmpContext, 0, 0, vbSrcCopy
-    DeleteDC TmpContext
+    BitBlt DeviceContext, 0, 0, Boundary.Width(), Boundary.Height(), tmpContext, 0, 0, vbSrcCopy
+    DeleteDC tmpContext
 End Sub
 
 Public Sub RenderingEngine_DrawToScreen(screen As Long, Width As Long, Height As Long)
@@ -127,6 +122,25 @@ End Sub
 
 Private Sub AddContext(context As Long)
     ReDim Preserve Contexts(ContextIndex)
-    Contexts(index) = context
+    Contexts(Index) = context
     ContextIndex = ContextIndex + 1
+End Sub
+
+Public Sub RenderingEngine_RegisterSprite(ByVal Name As Integer, ByVal Filepath As String, ByVal MaskFilepath As String)
+    ReDim Preserve RegisteredContexts(Name)
+    ReDim Preserve RegisteredMaskContexts(Name)
+
+    RegisteredContexts(Name) = RenderingEngine_CreateImageContext(Filepath)
+    RegisteredMaskContexts(Name) = RenderingEngine_CreateImageContext(MaskFilepath)
+End Sub
+
+Public Sub RenderingEngine_DrawSprite(Name As Integer, srcRect As Rectangle, destRect As Rectangle)
+    Dim mask As Long
+    Dim img As Long
+    
+    mask = RegisteredMaskContexts(Name)
+    img = RegisteredContexts(Name)
+    
+    BitBlt DeviceContext, destRect.Left, destRect.Top, destRect.Width, destRect.Height, mask, srcRect.Left, srcRect.Top, vbSrcAnd
+    BitBlt DeviceContext, destRect.Left, destRect.Top, destRect.Width, destRect.Height, img, srcRect.Left, srcRect.Top, vbSrcPaint
 End Sub

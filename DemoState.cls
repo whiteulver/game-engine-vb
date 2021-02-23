@@ -20,22 +20,24 @@ Private cftSprite As Sprite
 Private bgnSprite As Sprite
 
 
-Public Sub GameState_Initialize(RenderIn As RenderingEngine)
+Public Sub GameState_Initialize(ByRef RenderIn As RenderingEngine)
 
     Set Render = RenderIn
     
     ' Load Background
     Set bgnSprite = New Background
-    Dim bgnBank As New BackgroundSprite
-    Render.createSpriteContext bgnBank
+    Dim bgnBank As SpriteBank
+    Set bgnBank = New BackgroundSprite
+    Render.RegisterSprite 0, bgnBank.getFilename, bgnBank.getMaskFilename
     bgnSprite.Initialize bgnBank
 
     ' Load Craft
     Set cftSprite = New Craft
-    Dim cftBank As New CraftSprite
-    Render.createSpriteContext cftBank
+    Dim cftBank As SpriteBank
+    Set cftBank = New CraftSprite
+    Render.RegisterSprite 1, cftBank.getFilename, cftBank.getMaskFilename
     cftSprite.Initialize cftBank
-
+    
 End Sub
 
 
@@ -50,8 +52,8 @@ Public Sub GameState_Update(Time As Long)
 End Sub
 
 Public Sub GameState_Draw()
-    Render.Draw bgnSprite
-    Render.Draw cftSprite
+    Render.DrawSprite 0, bgnSprite.Bank.Rect(), bgnSprite.Rect
+    Render.DrawSprite 1, cftSprite.Bank.Rect(), cftSprite.Rect
 End Sub
 Public Sub GameState_Listen(GameEventIn As DomainEvent)
     Set GameEvent = GameEventIn

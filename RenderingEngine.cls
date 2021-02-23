@@ -14,10 +14,7 @@ Attribute VB_Exposed = False
 Public Sub Initialize(BoundaryIn As Rectangle)
 End Sub
 
-Public Sub createSpriteContext(Bank As SpriteBank)
-End Sub
-
-Public Sub Draw(spr As sprite)
+Public Sub Draw(spr As Sprite)
 End Sub
 
 Public Sub DrawToScreen(screen As Long, Width As Long, Height As Long)
@@ -26,5 +23,11 @@ End Sub
 Public Sub Cls()
 End Sub
 
-Public Sub ClearObjects(ByRef hdc As Long)
+Public Sub ClearObjects(ByRef hDC As Long)
+End Sub
+
+Public Sub RegisterSprite(ByVal Name As Integer, ByVal Filepath As String, ByVal MaskFilepath As String)
+End Sub
+' Draw a registered sprite by copy the srcRect to the destRect in screen
+Public Sub DrawSprite(Name As Integer, srcRect As Rectangle, destRect As Rectangle)
 End Sub

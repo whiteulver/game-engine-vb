@@ -17,13 +17,6 @@ End Function
 Public Function getMaskFilename() As String
 End Function
 
-Public Sub setContext(ByRef context As Long, ByRef maskContext As Long)
-End Sub
-
-Public Function getContext() As Long
-End Function
-Public Function getMaskContext() As Long
-End Function
 Public Function X() As Long
 End Function
 
@@ -36,4 +29,9 @@ End Function
 Public Function Height() As Long
 End Function
 
+Public Property Let Bank(ByVal index As Integer)
+End Property
+
+Public Property Get Rect() As Rectangle
+End Property
 

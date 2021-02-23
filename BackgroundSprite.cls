@@ -13,13 +13,18 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Implements SpriteBank
 
-Private SpriteContext As Long
-Private SpriteMaskContext As Long
 Private Bank As Integer
 Private Height As Long
 Private Width As Long
 Private MaxBanks As Integer
+Private Rect As Rectangle
 
+Private Sub Class_Initialize()
+    Bank = 0
+    Height = 256
+    Width = 512
+    MaxBanks = 8
+End Sub
 
 Public Function SpriteBank_getFilename() As String
     SpriteBank_getFilename = App.Path & "\resources\fantasy-512-x-256_full.bmp"
@@ -27,23 +32,6 @@ End Function
 
 Public Function SpriteBank_getMaskFilename() As String
     SpriteBank_getMaskFilename = App.Path & "\resources\fantasy-512-x-256_full.bmp"
-End Function
-
-Public Sub SpriteBank_setContext(ByRef context As Long, ByRef maskContext As Long)
-    SpriteContext = context
-    SpriteMaskContext = maskContext
-    Bank = 0
-    Height = 256
-    Width = 512
-    MaxBanks = 8
-End Sub
-
-Public Function SpriteBank_getContext() As Long
-    SpriteBank_getContext = SpriteContext
-End Function
-
-Public Function SpriteBank_getMaskContext() As Long
-    SpriteBank_getMaskContext = SpriteMaskContext
 End Function
 
 Public Function SpriteBank_X() As Long
@@ -62,3 +50,12 @@ End Function
 Public Function SpriteBank_Height() As Long
     SpriteBank_Height = Height
 End Function
+
+Public Property Let SpriteBank_Bank(ByVal index As Integer)
+    Bank = index
+End Property
+
+Public Property Get SpriteBank_Rect() As Rectangle
+    Set SpriteBank_Rect = New Rectangle
+    SpriteBank_Rect.initialize SpriteBank_X(), SpriteBank_Y(), SpriteBank_Width(), SpriteBank_Height()
+End Property

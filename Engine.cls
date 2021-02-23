@@ -12,7 +12,7 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Private IsRunning As Boolean
-Private Const FrameRate = 16
+Private Const MsDelay = 16
 Private Sprites() As SpriteBank
 Private Rendering As RenderingEngine
 Private Keyboard As KeyboardInput
@@ -33,29 +33,30 @@ Public Sub Initialize(RenderIn As RenderingEngine, BoundaryIn As Rectangle, Stat
 End Sub
 
 Public Sub run(source As Form)
-    ' Game loop tutorial at https://gameprogrammingpatterns.com/game-loop.html
-    Dim T1 As Long, T2 As Long, Lag As Long, Elapsed As Long
+    Dim T1 As Long, T2 As Long, FrameCount As Long, T3 As Long
+    FrameCount = 0
     IsRunning = True
     T1 = GetTickCount
-    Lag = 0
+    'T3 = GetTickCount
     Do
         DoEvents
         T2 = GetTickCount
-        Elapsed = T2 - T1
-        T1 = T2
-        Lag = Lag + Elapsed
-        State.Listen KeyboardEvent
-        Do
-            DoEvents
-            Lag = Lag - FrameRate
-        Loop Until Lag < FrameRate Or IsRunning = False
-        State.Update T2
-        ' Draw
-        Rendering.Cls
-        State.Draw
-        Rendering.DrawToScreen source.hDC, Boundary.Width(), Boundary.Height()
-        source.Refresh
-        Set State = State.State
+        If T2 - T1 >= MsDelay Then
+            State.Listen KeyboardEvent
+            State.Update T2
+            ' Draw
+            Rendering.Cls
+            State.Draw
+            Rendering.DrawToScreen source.hDC, Boundary.Width(), Boundary.Height()
+            source.Refresh
+            Set State = State.State
+            'FrameCount = FrameCount + 1
+        End If
+        'If (GetTickCount - T3) = 1000 Then
+        '    Debug.Print FrameCount
+        '    FrameCount = 0
+        '    T3 = GetTickCount
+        'End If
     Loop Until IsRunning = False
     Rendering.ClearObjects (source.hDC)
 End Sub

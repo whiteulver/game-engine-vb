@@ -13,7 +13,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Private Tick As Long
 
-Public Sub initialize()
+Public Sub Initialize()
 
 End Sub
 
