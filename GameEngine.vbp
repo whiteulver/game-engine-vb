@@ -17,7 +17,6 @@ Class=DemoState; DemoState.cls
 Class=Background; Background.cls
 Module=Animation; Animation.bas
 Class=Action; Action.cls
-Class=SpriteSheet; SpriteSheet.cls
 IconForm="frmMain"
 Startup="frmMain"
 HelpFile=""
