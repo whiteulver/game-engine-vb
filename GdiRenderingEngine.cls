@@ -31,6 +31,7 @@ Private Declare Function PathToRegion Lib "gdi32" (ByVal hDC As Long) As Long
 Private Declare Function FillRgn Lib "gdi32" (ByVal hDC As Long, ByVal hRgn As Long, ByVal hBrush As Long) As Long
 Private Declare Function CreateSolidBrush Lib "gdi32" (ByVal crColor As Long) As Long
 
+Private pForm As Form
 Private DeviceContext As Long
 Private Boundary As Rectangle
 Private Contexts() As Long
@@ -38,7 +39,8 @@ Private ContextIndex As Long
 Private RegisteredContexts() As Long
 Private RegisteredMaskContexts() As Long
 
-Public Sub RenderingEngine_initialize(BoundaryIn As Rectangle)
+Public Sub RenderingEngine_Init(FormIn As Form, BoundaryIn As Rectangle)
+    Set pForm = FormIn
     Set Boundary = BoundaryIn
     DeviceContext = CreateContext
  End Sub
@@ -107,22 +109,23 @@ Public Sub RenderingEngine_Cls()
     DeleteDC tmpContext
 End Sub
 
-Public Sub RenderingEngine_DrawToScreen(screen As Long, Width As Long, Height As Long)
-    BitBlt screen, 0, 0, Width, Height, DeviceContext, 0, 0, vbSrcCopy
+Public Sub RenderingEngine_DrawToScreen()
+    BitBlt pForm.hDC, 0, 0, Boundary.Width, Boundary.Height, DeviceContext, 0, 0, vbSrcCopy
+    pForm.Refresh
 End Sub
 
-Public Sub RenderingEngine_ClearObjects(ByRef hDC As Long)
+Public Sub RenderingEngine_ClearObjects()
     Dim i As Long
     For i = 0 To UBound(Contexts)
         DeleteDC Contexts(i)
     Next
     DeleteDC DeviceContext
-    ReleaseDC 0, hDC
+    ReleaseDC 0, pForm.hDC
 End Sub
 
 Private Sub AddContext(context As Long)
     ReDim Preserve Contexts(ContextIndex)
-    Contexts(Index) = context
+    Contexts(index) = context
     ContextIndex = ContextIndex + 1
 End Sub
 

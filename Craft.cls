@@ -27,20 +27,24 @@ Public Sub Sprite_Update(Time As Long)
         
         For Each KeyCode In KeyCodes
         
-            If KeyCode = 39 Then
+            If KeyCode = 39 Then ' Right
                 dstX = dstX + Step
+                pBank.Bank = 0
             End If
             
-            If KeyCode = 37 Then
+            If KeyCode = 37 Then ' Left
                 dstX = dstX - Step
+                pBank.Bank = 0
             End If
             
-            If KeyCode = 1 Then
+            If KeyCode = 1 Then ' Up
                 dstY = dstY - Step
+                pBank.Bank = 2
             End If
             
-            If KeyCode = 2 Then
+            If KeyCode = 2 Then ' Down
                 dstY = dstY + Step
+                pBank.Bank = 4
             End If
         
         Next KeyCode
@@ -69,11 +73,11 @@ Public Sub Sprite_Update(Time As Long)
     
 End Sub
 
-Public Sub Sprite_Initialize(ByRef Bank As SpriteBank)
+Public Sub Sprite_Init(ByRef Bank As SpriteBank)
     Set pBank = Bank
     Set pRect = New Rectangle
-    pRect.initialize 0, 0, pBank.Width, pBank.Height
-    pBank.Bank = 10
+    pRect.Init 0, 0, pBank.Width, pBank.Height
+    pBank.Bank = 0
 End Sub
 
 Public Property Get Sprite_Bank() As SpriteBank

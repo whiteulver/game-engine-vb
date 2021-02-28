@@ -11,23 +11,23 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Public Sub Initialize(BoundaryIn As Rectangle)
+Public Sub Initialize(FormIn As Form, BoundaryIn As Rectangle)
 End Sub
 
 Public Sub Draw(spr As Sprite)
 End Sub
 
-Public Sub DrawToScreen(screen As Long, Width As Long, Height As Long)
+Public Sub DrawToScreen()
 End Sub
 
 Public Sub Cls()
 End Sub
 
-Public Sub ClearObjects(ByRef hDC As Long)
+Public Sub ClearObjects()
 End Sub
 
 Public Sub RegisterSprite(ByVal Name As Integer, ByVal Filepath As String, ByVal MaskFilepath As String)
 End Sub
-' Draw a registered sprite by copy the srcRect to the destRect in screen
+' Draw a registered sprite by coping the srcRect to the destRect in screen
 Public Sub DrawSprite(Name As Integer, srcRect As Rectangle, destRect As Rectangle)
 End Sub

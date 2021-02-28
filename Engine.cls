@@ -27,12 +27,11 @@ Public Sub Initialize(RenderIn As RenderingEngine, BoundaryIn As Rectangle, Stat
     Set Boundary = BoundaryIn
     Set State = StateIn
     State.Initialize Rendering
-    Rendering.Initialize Boundary
 
     Set Keyboard = New KeyboardInput
 End Sub
 
-Public Sub run(source As Form)
+Public Sub run()
     Dim T1 As Long, T2 As Long, FrameCount As Long, T3 As Long
     FrameCount = 0
     IsRunning = True
@@ -47,8 +46,7 @@ Public Sub run(source As Form)
             ' Draw
             Rendering.Cls
             State.Draw
-            Rendering.DrawToScreen source.hDC, Boundary.Width(), Boundary.Height()
-            source.Refresh
+            Rendering.DrawToScreen
             Set State = State.State
             'FrameCount = FrameCount + 1
         End If
@@ -58,7 +56,7 @@ Public Sub run(source As Form)
         '    T3 = GetTickCount
         'End If
     Loop Until IsRunning = False
-    Rendering.ClearObjects (source.hDC)
+    Rendering.ClearObjects
 End Sub
 Public Sub terminate()
     IsRunning = False

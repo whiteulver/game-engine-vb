@@ -6,14 +6,6 @@ Public Type CollisionRect
     OffsetY As Integer ' The x distance of collision rect from the rectangle of Sprite
 End Type
 
-Public Type Frame
-    Id As Integer
-    Delay As Integer
-    Collisions() As CollisionRect
-    Attacks() As CollisionRect
-    hDC As Long
-End Type
-
 Public Type ActionItem
     Name As String
     Frames() As Frame

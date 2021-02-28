@@ -32,11 +32,12 @@ Private Sub Form_GotFocus()
     Dim State As GameState
     Set State = New DemoState
     
-    GameEngine.initialize Rendering, Boundary, State
+    Rendering.Initialize frmMain, Boundary
+    GameEngine.Initialize Rendering, Boundary, State
     
     DoEvents
     
-    GameEngine.run frmMain
+    GameEngine.run
     End
 End Sub
 
@@ -48,7 +49,7 @@ End Sub
 
 Private Sub Form_Load()
     Set Boundary = New Rectangle
-    Boundary.initialize 0, 0, 512, 256
+    Boundary.Initialize 0, 0, 512, 256
     Me.Height = Boundary.Height() * (Height / ScaleHeight)
 End Sub
 

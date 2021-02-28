@@ -20,7 +20,7 @@ Private cftSprite As Sprite
 Private bgnSprite As Sprite
 
 
-Public Sub GameState_Initialize(ByRef RenderIn As RenderingEngine)
+Public Sub GameState_Init(ByRef RenderIn As RenderingEngine)
 
     Set Render = RenderIn
     
@@ -29,14 +29,14 @@ Public Sub GameState_Initialize(ByRef RenderIn As RenderingEngine)
     Dim bgnBank As SpriteBank
     Set bgnBank = New BackgroundSprite
     Render.RegisterSprite 0, bgnBank.getFilename, bgnBank.getMaskFilename
-    bgnSprite.Initialize bgnBank
+    bgnSprite.Init bgnBank
 
     ' Load Craft
     Set cftSprite = New Craft
     Dim cftBank As SpriteBank
     Set cftBank = New CraftSprite
     Render.RegisterSprite 1, cftBank.getFilename, cftBank.getMaskFilename
-    cftSprite.Initialize cftBank
+    cftSprite.Init cftBank
     
 End Sub
 

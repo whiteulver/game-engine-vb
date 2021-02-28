@@ -16,10 +16,10 @@ Private pBank As SpriteBank
 Private pRect As Rectangle
 Private GameEvent As DomainEvent
 
-Public Sub Sprite_Initialize(ByRef Bank As SpriteBank)
+Public Sub Sprite_Init(ByRef Bank As SpriteBank)
     Set pBank = Bank
     Set pRect = New Rectangle
-    pRect.Initialize 0, 0, pBank.Width, pBank.Height
+    pRect.Init 0, 0, pBank.Width, pBank.Height
 End Sub
 
 Public Sub Sprite_Update(Time As Long)

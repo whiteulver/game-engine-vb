@@ -17,16 +17,33 @@ Private Bank As Integer
 Private Height As Integer
 Private Width As Integer
 Private MaxBanks As Integer
-Private OffsetX As Integer
-Private OffsetY As Integer
+Private Frames(14) As Frame
+
+Private Type Frame
+    OffsetX As Long
+    OffsetY As Long
+End Type
 
 Private Sub Class_Initialize()
+    Dim OffsetX As Integer, OffsetY As Integer
     Bank = 0
     OffsetX = 0
     OffsetY = 0
     Height = 24
     Width = 32
-    MaxBanks = 4
+    MaxBanks = 14
+    
+    For i = 0 To MaxBanks
+        Dim tmpFrame As Frame
+        If i = 5 Or i = 10 Then
+            OffsetX = 0
+            OffsetY = OffsetY + 1
+        End If
+        tmpFrame.OffsetX = OffsetX * Width
+        tmpFrame.OffsetY = OffsetY * Height
+        Frames(i) = tmpFrame
+        OffsetX = OffsetX + 1
+    Next
 End Sub
 
 Public Function SpriteBank_getFilename() As String
@@ -42,11 +59,11 @@ Public Function SpriteBank_getMaskContext() As Long
 End Function
 
 Public Function SpriteBank_X() As Long
-    SpriteBank_X = OffsetX * Width
+    SpriteBank_X = Frames(Bank).OffsetX
 End Function
 
 Public Function SpriteBank_Y() As Long
-    SpriteBank_Y = OffsetY * Height
+    SpriteBank_Y = Frames(Bank).OffsetY
 End Function
 
 Public Function SpriteBank_Width() As Long
@@ -57,12 +74,11 @@ Public Function SpriteBank_Height() As Long
     SpriteBank_Height = Height
 End Function
 
-Public Property Let SpriteBank_Bank(ByVal Index As Integer)
-    Bank = Index
-    OffsetY = Index \ 4
+Public Property Let SpriteBank_Bank(ByVal index As Integer)
+    Bank = index
 End Property
 
 Public Property Get SpriteBank_Rect() As Rectangle
     Set SpriteBank_Rect = New Rectangle
-    SpriteBank_Rect.initialize SpriteBank_X(), SpriteBank_Y(), SpriteBank_Width(), SpriteBank_Height()
+    SpriteBank_Rect.Init SpriteBank_X(), SpriteBank_Y(), SpriteBank_Width(), SpriteBank_Height()
 End Property
