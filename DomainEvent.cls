@@ -15,7 +15,7 @@ Private pName As String
 Private GameEngine As Engine
 Private KeyCode() As Integer
 
-Public Sub Initialize(EventName As String, e As Engine)
+Public Sub Init(EventName As String, e As Engine)
     pName = EventName
     Set GameEngine = e
 End Sub

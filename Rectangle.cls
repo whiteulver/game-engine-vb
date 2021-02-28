@@ -16,7 +16,7 @@ Private pTop As Long
 Private pHeight As Long
 Private pWidth As Long
 
-Public Sub Initialize(LeftIn As Long, TopIn As Long, WidthIn As Long, HeightIn As Long)
+Public Sub Init(LeftIn As Long, TopIn As Long, WidthIn As Long, HeightIn As Long)
     pLeft = LeftIn
     pTop = TopIn
     pWidth = WidthIn

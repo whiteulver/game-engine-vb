@@ -23,7 +23,7 @@ End Sub
 Public Sub Listen(GameEvent As DomainEvent)
 End Sub
 
-Public Sub Initialize(Render As RenderingEngine)
+Public Sub Init(Render As RenderingEngine)
 End Sub
 
 

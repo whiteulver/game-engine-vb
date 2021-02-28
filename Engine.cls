@@ -22,11 +22,11 @@ Private State As GameState
 
 Private Declare Function GetTickCount Lib "kernel32" () As Long
 
-Public Sub Initialize(RenderIn As RenderingEngine, BoundaryIn As Rectangle, StateIn As GameState)
+Public Sub Init(RenderIn As RenderingEngine, BoundaryIn As Rectangle, StateIn As GameState)
     Set Rendering = RenderIn
     Set Boundary = BoundaryIn
     Set State = StateIn
-    State.Initialize Rendering
+    State.Init Rendering
 
     Set Keyboard = New KeyboardInput
 End Sub
@@ -76,6 +76,6 @@ Private Function KeyboardEvent() As DomainEvent
     
     KeyEvent.setKeyCode Keyboard.getKeyCodes
     
-    KeyEvent.Initialize "keydown", Me
+    KeyEvent.Init "keydown", Me
     Set KeyboardEvent = KeyEvent
 End Function

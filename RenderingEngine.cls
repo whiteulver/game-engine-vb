@@ -11,10 +11,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Public Sub Initialize(FormIn As Form, BoundaryIn As Rectangle)
-End Sub
-
-Public Sub Draw(spr As Sprite)
+Public Sub Init(FormIn As Form, BoundaryIn As Rectangle)
 End Sub
 
 Public Sub DrawToScreen()

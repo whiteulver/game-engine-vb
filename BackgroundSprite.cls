@@ -57,5 +57,5 @@ End Property
 
 Public Property Get SpriteBank_Rect() As Rectangle
     Set SpriteBank_Rect = New Rectangle
-    SpriteBank_Rect.initialize SpriteBank_X(), SpriteBank_Y(), SpriteBank_Width(), SpriteBank_Height()
+    SpriteBank_Rect.Init SpriteBank_X(), SpriteBank_Y(), SpriteBank_Width(), SpriteBank_Height()
 End Property

@@ -11,7 +11,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Public Sub Initialize(ByRef Bank As SpriteBank)
+Public Sub Init(ByRef Bank As SpriteBank)
 End Sub
 
 Public Sub Update(Time As Long)

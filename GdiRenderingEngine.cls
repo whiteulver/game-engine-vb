@@ -80,11 +80,6 @@ Private Function RenderingEngine_CreateImageContext(Filepath As String) As Long
     RenderingEngine_CreateImageContext = context
 End Function
 
-Public Sub RenderingEngine_Draw(spr As Sprite)
-    BitBlt DeviceContext, spr.Rect.Left, spr.Rect.Top, spr.Rect.Width, spr.Rect.Height, spr.Bank.getMaskContext(), spr.Bank.X, spr.Bank.Y, vbSrcAnd
-    BitBlt DeviceContext, spr.Rect.Left, spr.Rect.Top, spr.Rect.Width, spr.Rect.Height, spr.Bank.getContext(), spr.Bank.X, spr.Bank.Y, vbSrcPaint
-End Sub
-
 Public Sub RenderingEngine_Cls()
     Dim Region As Long
     Dim tmpContext As Long
