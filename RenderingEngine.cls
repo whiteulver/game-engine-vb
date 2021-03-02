@@ -25,6 +25,6 @@ End Sub
 
 Public Sub RegisterSprite(ByVal Name As Integer, ByVal Filepath As String, ByVal MaskFilepath As String)
 End Sub
-' Draw a registered sprite by coping the srcRect to the destRect in screen
+' Draw a registered sprite by coping the srcRect of sprite image to the destRect in screen
 Public Sub Draw(Name As Integer, srcRect As Rectangle, destRect As Rectangle)
 End Sub

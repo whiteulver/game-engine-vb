@@ -18,6 +18,7 @@ Private GameEvents() As DomainEvent
 Private GameEvent As DomainEvent
 Private cftSprite As Sprite
 Private bgnSprite As Sprite
+Private alienSprite As Sprite
 
 
 Public Sub GameState_Init(ByRef RenderIn As RenderingEngine)
@@ -32,6 +33,9 @@ Public Sub GameState_Init(ByRef RenderIn As RenderingEngine)
     Set cftSprite = New Craft
     Render.RegisterSprite 1, App.Path & "\resources\pxplayer.bmp", App.Path & "\resources\pxplayer_m.bmp"
     
+    Set alienSprite = New Alien
+    Render.RegisterSprite 2, App.Path & "\resources\ProjectX_SE_level1_sprites.bmp", App.Path & "\resources\ProjectX_SE_level1_sprites_mask.bmp"
+    
 End Sub
 
 Public Function GameState_State() As GameState
@@ -42,11 +46,13 @@ Public Sub GameState_Update(Time As Long)
     bgnSprite.Update Time
     cftSprite.Listen GameEvent
     cftSprite.Update Time
+    alienSprite.Update Time
 End Sub
 
 Public Sub GameState_Draw()
     bgnSprite.Draw Render
     cftSprite.Draw Render
+    alienSprite.Draw Render
 End Sub
 Public Sub GameState_Listen(GameEventIn As DomainEvent)
     Set GameEvent = GameEventIn
