@@ -12,7 +12,7 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Private IsRunning As Boolean
-Private Const MsDelay = 16
+Private Const MsDelay = 15
 Private Sprites() As SpriteBank
 Private Rendering As RenderingEngine
 Private Keyboard As KeyboardInput
@@ -36,11 +36,12 @@ Public Sub run()
     FrameCount = 0
     IsRunning = True
     T1 = GetTickCount
-    'T3 = GetTickCount
+    T3 = GetTickCount
     Do
         DoEvents
         T2 = GetTickCount
         If T2 - T1 >= MsDelay Then
+            'Debug.Print T2 - T1
             State.Listen KeyboardEvent
             State.Update T2
             ' Draw
@@ -48,13 +49,14 @@ Public Sub run()
             State.Draw
             Rendering.DrawToScreen
             Set State = State.State
-            'FrameCount = FrameCount + 1
+            FrameCount = FrameCount + 1
+            T1 = GetTickCount
         End If
-        'If (GetTickCount - T3) = 1000 Then
-        '    Debug.Print FrameCount
-        '    FrameCount = 0
-        '    T3 = GetTickCount
-        'End If
+        If (GetTickCount - T3) >= 1000 Then
+            Debug.Print FrameCount
+            FrameCount = 0
+            T3 = GetTickCount
+        End If
     Loop Until IsRunning = False
     Rendering.ClearObjects
 End Sub

@@ -51,3 +51,13 @@ Public Sub Move(LeftIn As Long, TopIn As Long)
     pLeft = pLeft + LeftIn
     pTop = pTop + TopIn
 End Sub
+
+Public Function Collide(Other As Rectangle) As Boolean
+    Collide = False
+    If pLeft < Other.Left + Other.Width And _
+            pLeft + pWidth > Other.Left And _
+            pTop < Other.Top + Other.Height And _
+            pTop + pHeight > Other.Top Then
+        Collide = True
+    End If
+End Function

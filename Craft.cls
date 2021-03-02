@@ -47,7 +47,8 @@ Public Sub Sprite_Update(Time As Long)
             ActionIndex = 2
         End If
         
-        If KeyCodes(0) = 0 And KeyCodes(1) = 0 And KeyCodes(2) = 0 And KeyCodes(3) = 0 Then
+        If KeyCodes(0) = 0 And KeyCodes(1) = 0 And KeyCodes(2) = 0 _
+                And KeyCodes(3) = 0 Then
             If ActionIndex = 1 Or ActionIndex = 3 Then
                 ActionIndex = 3
             ElseIf ActionIndex = 2 Or ActionIndex = 4 Then
@@ -102,21 +103,21 @@ Public Sub Sprite_Init(ByRef Bank As SpriteBank)
     
     Frames_1(0) = 0
     Set Actions(0) = New Action
-    Actions(0).Init Frames_1, 10
+    Actions(0).Init Frames_1, 5
     
     ' Go Up Action
     Frames_2(0) = 0
     Frames_2(1) = 1
     Frames_2(2) = 2
     Set Actions(1) = New Action
-    Actions(1).Init Frames_2, 10
+    Actions(1).Init Frames_2, 5
     
     ' Go Down Action
     Frames_3(0) = 0
     Frames_3(1) = 3
     Frames_3(2) = 4
     Set Actions(2) = New Action
-    Actions(2).Init Frames_3, 10
+    Actions(2).Init Frames_3, 5
     
     ' Restore Up Action
     Frames_4(0) = 2
