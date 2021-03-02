@@ -5,16 +5,16 @@ Begin VB.Form frmMain
    BackColor       =   &H00000000&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Game Engine"
-   ClientHeight    =   3840
+   ClientHeight    =   7680
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   7680
+   ClientWidth     =   9600
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   256
+   ScaleHeight     =   512
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   512
+   ScaleWidth      =   640
    StartUpPosition =   2  'CenterScreen
 End
 Attribute VB_Name = "frmMain"
@@ -49,8 +49,9 @@ End Sub
 
 Private Sub Form_Load()
     Set Boundary = New Rectangle
-    Boundary.Init 0, 0, 512, 256
-    Me.Height = Boundary.Height() * (Height / ScaleHeight)
+    Boundary.Init 0, 0, 320, 256
+    Me.Height = Boundary.Height() * 2 * (Height / ScaleHeight)
+    Me.Width = Boundary.Width * 2 * (Width / ScaleWidth)
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)

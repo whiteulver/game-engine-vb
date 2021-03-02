@@ -11,9 +11,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Private Tick As Long
+Private Tick As Long ' Keep the ticks that have passed since the begining of the action. Reset when tick reaches the Delay
 Private Frames() As Integer
-Private Delay As Integer
+Private Delay As Integer ' The Delay in ticks between the frames
 Private FrameIndex As Integer
 
 Public Sub Init(FramesIn() As Integer, DelayIn As Integer)
@@ -37,6 +37,7 @@ Public Function NextFrame() As Integer
     NextFrame = Frames(FrameIndex)
 End Function
 Public Sub Reset()
+    Tick = 0
     FrameIndex = 0
 End Sub
 

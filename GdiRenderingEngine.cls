@@ -30,6 +30,7 @@ Private Declare Function EndPath Lib "gdi32" (ByVal hDC As Long) As Long
 Private Declare Function PathToRegion Lib "gdi32" (ByVal hDC As Long) As Long
 Private Declare Function FillRgn Lib "gdi32" (ByVal hDC As Long, ByVal hRgn As Long, ByVal hBrush As Long) As Long
 Private Declare Function CreateSolidBrush Lib "gdi32" (ByVal crColor As Long) As Long
+Private Declare Function StretchBlt Lib "gdi32" (ByVal hDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal nSrcWidth As Long, ByVal nSrcHeight As Long, ByVal dwRop As Long) As Long
 
 Private pForm As Form
 Private DeviceContext As Long
@@ -105,7 +106,7 @@ Public Sub RenderingEngine_Cls()
 End Sub
 
 Public Sub RenderingEngine_DrawToScreen()
-    BitBlt pForm.hDC, 0, 0, Boundary.Width, Boundary.Height, DeviceContext, 0, 0, vbSrcCopy
+    StretchBlt pForm.hDC, 0, 0, Boundary.Width * 2, Boundary.Height * 2, DeviceContext, 0, 0, Boundary.Width, Boundary.Height, vbSrcCopy
     pForm.Refresh
 End Sub
 

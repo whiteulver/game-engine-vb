@@ -34,7 +34,7 @@ End Sub
 Public Sub Sprite_Init()
 End Sub
 
-Public Sub Sprite_Update(Time As Long)
+Public Sub Sprite_Update(ByVal Time As Long)
     ScrollX = ScrollX + ScrollStep
     If ScrollX > pRect.Width Then
         ScrollX = 0
@@ -50,11 +50,11 @@ Public Property Get Sprite_Rect() As Rectangle
     Set Sprite_Rect = pRect
 End Property
 
-Public Sub Sprite_Listen(GameEventIn As DomainEvent)
+Public Sub Sprite_Listen(ByRef GameEventIn As DomainEvent)
     Set GameEvent = GameEventIn
 End Sub
 
-Public Sub Sprite_Draw(Render As RenderingEngine)
+Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
     Render.Draw 0, SourceRectLeft, ViewRectLeft
     Render.Draw 0, SourceRectRight, ViewRectRight
 End Sub

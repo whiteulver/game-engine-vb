@@ -14,14 +14,14 @@ Attribute VB_Exposed = False
 Public Sub Init()
 End Sub
 
-Public Sub Update(Time As Long)
+Public Sub Update(ByVal Time As Long)
 End Sub
 
-Public Sub Draw(Render As RenderingEngine)
+Public Sub Draw(ByRef Render As RenderingEngine)
 End Sub
 
 Public Property Get Rect() As Rectangle
 End Property
 
-Public Sub Listen(GameEventIn As DomainEvent)
+Public Sub Listen(ByRef GameEventIn As DomainEvent)
 End Sub

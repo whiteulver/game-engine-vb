@@ -27,7 +27,7 @@ Private Type Frame
     X As Long
     Y As Long
 End Type
-Public Sub Sprite_Update(Time As Long)
+Public Sub Sprite_Update(ByVal Time As Long)
     Dim dstX As Long
     Dim dstY As Long
     
@@ -169,11 +169,11 @@ Public Property Get Sprite_Rect() As Rectangle
     Set Sprite_Rect = pRect
 End Property
 
-Public Sub Sprite_Listen(GameEventIn As DomainEvent)
+Public Sub Sprite_Listen(ByRef GameEventIn As DomainEvent)
     Set GameEvent = GameEventIn
 End Sub
 
-Public Sub Sprite_Draw(Render As RenderingEngine)
+Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
     Render.Draw 1, FrameRect(), pRect
 End Sub
 

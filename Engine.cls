@@ -21,7 +21,7 @@ Private State As GameState
 
 Private Declare Function GetTickCount Lib "kernel32" () As Long
 
-Public Sub Init(RenderIn As RenderingEngine, BoundaryIn As Rectangle, StateIn As GameState)
+Public Sub Init(ByRef RenderIn As RenderingEngine, ByVal BoundaryIn As Rectangle, ByVal StateIn As GameState)
     Set Rendering = RenderIn
     Set Boundary = BoundaryIn
     Set State = StateIn
