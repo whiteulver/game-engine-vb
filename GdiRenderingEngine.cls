@@ -132,7 +132,7 @@ Public Sub RenderingEngine_RegisterSprite(ByVal Name As Integer, ByVal Filepath 
     RegisteredMaskContexts(Name) = RenderingEngine_CreateImageContext(MaskFilepath)
 End Sub
 
-Public Sub RenderingEngine_DrawSprite(Name As Integer, srcRect As Rectangle, destRect As Rectangle)
+Public Sub RenderingEngine_Draw(Name As Integer, srcRect As Rectangle, destRect As Rectangle)
     Dim mask As Long
     Dim img As Long
     

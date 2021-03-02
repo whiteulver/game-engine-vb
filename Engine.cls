@@ -13,7 +13,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Private IsRunning As Boolean
 Private Const MsDelay = 15
-Private Sprites() As SpriteBank
 Private Rendering As RenderingEngine
 Private Keyboard As KeyboardInput
 Private DeviceContextHandler As Long

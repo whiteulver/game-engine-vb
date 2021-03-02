@@ -11,20 +11,14 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Public Sub Init(ByRef Bank As SpriteBank)
+Public Sub Init()
 End Sub
 
 Public Sub Update(Time As Long)
 End Sub
 
-Public Property Get Bank() As SpriteBank
-End Property
-
-Friend Property Let Bank(ByRef BankIn As SpriteBank)
-End Property
-
-Friend Property Let Rect(ByRef RectIn As Rectangle)
-End Property
+Public Sub Draw(Render As RenderingEngine)
+End Sub
 
 Public Property Get Rect() As Rectangle
 End Property

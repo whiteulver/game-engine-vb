@@ -26,34 +26,27 @@ Public Sub GameState_Init(ByRef RenderIn As RenderingEngine)
     
     ' Load Background
     Set bgnSprite = New Background
-    Dim bgnBank As SpriteBank
-    Set bgnBank = New BackgroundSprite
-    Render.RegisterSprite 0, bgnBank.getFilename, bgnBank.getMaskFilename
-    bgnSprite.Init bgnBank
+    Render.RegisterSprite 0, App.Path & "\resources\fantasy-512-x-256_full.bmp", App.Path & "\resources\fantasy-512-x-256_full.bmp"
 
     ' Load Craft
     Set cftSprite = New Craft
-    Dim cftBank As SpriteBank
-    Set cftBank = New CraftSprite
-    Render.RegisterSprite 1, cftBank.getFilename, cftBank.getMaskFilename
-    cftSprite.Init cftBank
+    Render.RegisterSprite 1, App.Path & "\resources\pxplayer.bmp", App.Path & "\resources\pxplayer_m.bmp"
     
 End Sub
-
 
 Public Function GameState_State() As GameState
     Set GameState_State = Me
 End Function
 
-
 Public Sub GameState_Update(Time As Long)
+    bgnSprite.Update Time
     cftSprite.Listen GameEvent
     cftSprite.Update Time
 End Sub
 
 Public Sub GameState_Draw()
-    Render.DrawSprite 0, bgnSprite.Bank.Rect(), bgnSprite.Rect
-    Render.DrawSprite 1, cftSprite.Bank.Rect(), cftSprite.Rect
+    bgnSprite.Draw Render
+    cftSprite.Draw Render
 End Sub
 Public Sub GameState_Listen(GameEventIn As DomainEvent)
     Set GameEvent = GameEventIn
