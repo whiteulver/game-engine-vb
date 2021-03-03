@@ -108,7 +108,7 @@ Private Sub Class_Initialize()
     Dim Skin As Integer ' The type of the craft. Available options are 0, 5, 10
     Skin = 0
     Dim Frames_1(0) As Integer
-    Dim Frames_2(2) As Integer, Frames_3(2) As Integer
+    Dim Frames_2(1) As Integer, Frames_3(1) As Integer
     Dim Frames_4(2) As Integer, Frames_5(2) As Integer
     
     Frames_1(0) = Skin
@@ -116,16 +116,16 @@ Private Sub Class_Initialize()
     Actions(0).Init Frames_1, 5
     
     ' Go Up Action
-    Frames_2(0) = Frames_1(0)
-    Frames_2(1) = 1 + Skin
-    Frames_2(2) = 2 + Skin
+    ' Frames_2(0) = Frames_1(0)
+    Frames_2(0) = 1 + Skin
+    Frames_2(1) = 2 + Skin
     Set Actions(1) = New Action
     Actions(1).Init Frames_2, 5
     
     ' Go Down Action
-    Frames_3(0) = Frames_1(0)
-    Frames_3(1) = 3 + Skin
-    Frames_3(2) = 4 + Skin
+    ' Frames_3(0) = Frames_1(0)
+    Frames_3(0) = 3 + Skin
+    Frames_3(1) = 4 + Skin
     Set Actions(2) = New Action
     Actions(2).Init Frames_3, 5
     
