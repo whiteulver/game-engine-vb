@@ -25,3 +25,10 @@ End Property
 
 Public Sub Listen(ByRef GameEventIn As DomainEvent)
 End Sub
+
+Public Sub Destroy()
+End Sub
+
+Public Property Get Registry() As Integer
+End Property
+

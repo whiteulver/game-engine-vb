@@ -15,6 +15,7 @@ Implements Sprite
 
 Private Const Width As Integer = 512
 Private Const Height As Integer = 256
+Private Const Registry As Integer = 0
 Private ScrollStep As Long
 Private pRect As Rectangle
 Private GameEvent As DomainEvent
@@ -58,3 +59,10 @@ Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
     Render.Draw 0, SourceRectLeft, ViewRectLeft
     Render.Draw 0, SourceRectRight, ViewRectRight
 End Sub
+
+Public Sub Sprite_Destroy()
+End Sub
+
+Public Property Get Sprite_Registry() As Integer
+    Sprite_Registry = Registry
+End Property

@@ -14,6 +14,7 @@ Class=DemoState; DemoState.cls
 Class=Background; Background.cls
 Class=Action; Action.cls
 Class=Alien; Alien.cls
+Class=Asteroid; Asteroid.cls
 IconForm="frmMain"
 Startup="frmMain"
 HelpFile=""

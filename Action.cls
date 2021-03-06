@@ -11,9 +11,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Private Tick As Long ' Keep the ticks that have passed since the begining of the action. Reset when tick reaches the Delay
-Private Frames() As Integer
-Private Delay As Integer ' The Delay in ticks between the frames
+' The Action class iterates through the frame indexes, according to delay
+' and provides the next frame index to the sprite so it can display it.
+Private Tick As Long ' Keep the ticks that have passed since the begining of the action. Reset when tick reaches the Delay.
+Private Frames() As Integer ' An array of the frame indexes
+Private Delay As Integer ' The Delay in ticks between the frames.
 Private FrameIndex As Integer
 
 Public Sub Init(FramesIn() As Integer, DelayIn As Integer)
