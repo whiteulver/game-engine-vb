@@ -140,6 +140,6 @@ Public Sub RenderingEngine_Draw(Name As Integer, srcRect As Rectangle, destRect 
     mask = RegisteredMaskContexts(Name)
     img = RegisteredContexts(Name)
     
-    BitBlt DeviceContext, destRect.Left, destRect.Top, destRect.Width, destRect.Height, mask, srcRect.Left, srcRect.Top, vbSrcAnd
-    BitBlt DeviceContext, destRect.Left, destRect.Top, destRect.Width, destRect.Height, img, srcRect.Left, srcRect.Top, vbSrcPaint
+    BitBlt DeviceContext, destRect.Left, destRect.Top, srcRect.Width, srcRect.Height, mask, srcRect.Left, srcRect.Top, vbSrcAnd
+    BitBlt DeviceContext, destRect.Left, destRect.Top, srcRect.Width, srcRect.Height, img, srcRect.Left, srcRect.Top, vbSrcPaint
 End Sub

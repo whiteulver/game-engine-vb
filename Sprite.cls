@@ -29,6 +29,9 @@ End Sub
 Public Sub Destroy()
 End Sub
 
+Public Function IsAlive() As Boolean
+End Function
+
 Public Property Get Registry() As Integer
 End Property
 

@@ -11,6 +11,8 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+Option Explicit
+
 Private pLeft As Long
 Private pTop As Long
 Private pHeight As Long
@@ -61,3 +63,8 @@ Public Function Collide(Other As Rectangle) As Boolean
         Collide = True
     End If
 End Function
+' Align the position of this rectnge according to X, Y from Source rectangle
+Public Sub Align(Source As Rectangle)
+    pLeft = Source.Left
+    pTop = Source.Top
+End Sub

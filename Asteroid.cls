@@ -70,6 +70,9 @@ End Sub
 Public Sub Sprite_Destroy()
 End Sub
 
+Public Function Sprite_IsAlive() As Boolean
+End Function
+
 Public Property Get Sprite_Registry() As Integer
     Sprite_Registry = 2
 End Property
