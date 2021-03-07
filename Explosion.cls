@@ -47,14 +47,31 @@ Private Sub Class_Initialize()
     Frames_6(14) = 15
     Frames_6(15) = 16
     Set Actions(0) = New Action
-    Actions(0).Init Frames_6, 5
-    Dim i As Integer
+    Actions(0).Init Frames_6, 3
+    Dim i As Integer, Delay(16) As Integer
+    Delay(0) = 1
+    Delay(1) = 1
+    Delay(2) = 1
+    Delay(3) = 1
+    Delay(4) = 1
+    Delay(5) = 1
+    Delay(6) = 1
+    Delay(7) = 1
+    Delay(8) = 1
+    Delay(9) = 1
+    Delay(10) = 1
+    Delay(11) = 1
+    Delay(12) = 1
+    Delay(13) = 1
+    Delay(14) = 1
+    Delay(15) = 1
+    Delay(16) = 1
     For i = 0 To UBound(ExplodeFrames)
         Set ExplodeFrames(i) = New Frame
         If i < 10 Then
-            ExplodeFrames(i).Init 32 * i, 0, 32, 32, 0, 0, 32, 32
+            ExplodeFrames(i).Init 32 * i, 0, 32, 32, 0, 0, 32, 32, Delay(i)
         Else
-            ExplodeFrames(i).Init 32 * (i - 10), 32, 32, 32, 0, 0, 32, 32
+            ExplodeFrames(i).Init 32 * (i - 10), 32, 32, 32, 0, 0, 32, 32, Delay(i)
         End If
     Next
 End Sub

@@ -93,7 +93,7 @@ Private Sub Class_Initialize()
             OffsetX = 0
             OffsetY = OffsetY + 1
         End If
-        Frames(i).Init OffsetX * Width, OffsetY * Height, Width, Height, 0, 0, Width, 14
+        Frames(i).Init OffsetX * Width, OffsetY * Height, Width, Height, 0, 0, Width, 14, 5
         OffsetX = OffsetX + 1
     Next
 End Sub
