@@ -11,6 +11,8 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+Option Explicit
+
 ' The Action class iterates through the frame indexes, according to delay
 ' and provides the next frame index to the sprite so it can display it.
 Private Tick As Long ' Keep the ticks that have passed since the begining of the action. Reset when tick reaches the Delay.

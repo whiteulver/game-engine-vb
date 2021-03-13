@@ -11,6 +11,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+Option Explicit
 Implements RenderingEngine
 
 Private Declare Function GetDC Lib "user32" (ByVal hwnd As Long) As Long
@@ -84,6 +85,7 @@ End Function
 Public Sub RenderingEngine_Cls()
     Dim Region As Long
     Dim tmpContext As Long
+    Dim brush As Long
     
     tmpContext = CreateContext
     
@@ -121,7 +123,7 @@ End Sub
 
 Private Sub AddContext(context As Long)
     ReDim Preserve Contexts(ContextIndex)
-    Contexts(index) = context
+    Contexts(ContextIndex) = context
     ContextIndex = ContextIndex + 1
 End Sub
 
