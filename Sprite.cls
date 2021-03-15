@@ -37,3 +37,5 @@ End Function
 Public Property Get Registry() As Integer
 End Property
 
+Public Sub Collide(ByRef Other As Sprite)
+End Sub

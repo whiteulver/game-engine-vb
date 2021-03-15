@@ -24,8 +24,12 @@ Private Type AsteroidType
     Height As Long
 End Type
 Private Variants(1) As AsteroidType
+Private Alive As Boolean
+Private Explosion As Sprite
 
 Private Sub Class_Initialize()
+    Alive = True
+    Set Explosion = New Explosion
     Variants(0).srcX = 145
     Variants(0).srcY = 130
     Variants(0).Width = 30
@@ -51,11 +55,19 @@ Public Sub Sprite_Init()
 End Sub
 
 Public Sub Sprite_Update(ByVal Time As Long)
+    If Alive = False Then
+        Explosion.Update Time
+        Exit Sub
+    End If
     Rect.Move -Speed, 0
 End Sub
 
 Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
-    Render.Draw 2, srcRect, Rect
+    If Alive = True Then
+        Render.Draw 2, srcRect, Rect
+    Else
+        Explosion.Draw Render
+    End If
 End Sub
 
 Public Property Get Sprite_Rect() As Rectangle
@@ -66,11 +78,20 @@ Public Sub Sprite_Listen(ByRef GameEventIn As DomainEvent)
 End Sub
 
 Public Sub Sprite_Destroy()
+    If Alive = False Then
+        Exit Sub
+    End If
+    Alive = False
+    Explosion.Rect.Align Rect
 End Sub
 
 Public Function Sprite_IsAlive() As Boolean
+    Sprite_IsAlive = Alive
 End Function
 
 Public Property Get Sprite_Registry() As Integer
     Sprite_Registry = 2
 End Property
+
+Public Sub Sprite_Collide(ByRef Other As Sprite)
+End Sub

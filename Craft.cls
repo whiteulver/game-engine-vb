@@ -16,7 +16,7 @@ Implements Sprite
 
 Private Const Registry As Integer = 1
 Private Speed As Integer
-Private pRect As Rectangle
+Private Rect As Rectangle
 Private GameEvent As DomainEvent
 Private Actions(4) As Action
 Private CurrentAction As Integer
@@ -35,9 +35,9 @@ Private Sub Class_Initialize()
     Set Explosion = New Explosion
     Alive = True
     BulletTick = 0: BulletIndex = 0
-    Set pRect = New Rectangle
+    Set Rect = New Rectangle
     ' Initial position of Sprite, up left corner.
-    pRect.Init 0, 0, Width, Height
+    Rect.Init 0, 0, Width, Height
     ' Initial Speed
     Speed = 2
     ' Current action is the Flying
@@ -108,6 +108,7 @@ Public Sub Sprite_Update(ByVal Time As Long)
     
     If Alive = False Then
         Explosion.Update Time
+        BulletHandling Time
         Exit Sub
     End If
     
@@ -160,29 +161,32 @@ Public Sub Sprite_Update(ByVal Time As Long)
     Next
     
     ' Move internal Rect
-    pRect.Move dstX, dstY
+    Rect.Move dstX, dstY
     
     ' Check the screen boundaries and stop motion for the Craft
-    If pRect.Left < 0 Then
-        pRect.Left = 0
+    If Rect.Left < 0 Then
+        Rect.Left = 0
     End If
     
-    If pRect.Left > GameEvent.getEngine().getBoundary().Width() - Width Then
-        pRect.Left = GameEvent.getEngine().getBoundary().Width() - Width
+    If Rect.Left > GameEvent.getEngine().getBoundary().Width() - Width Then
+        Rect.Left = GameEvent.getEngine().getBoundary().Width() - Width
     End If
     
-    If pRect.Top < 0 Then
-        pRect.Top = 0
+    If Rect.Top < 0 Then
+        Rect.Top = 0
     End If
     
-    If pRect.Top > GameEvent.getEngine().getBoundary().Height() - Height Then
-        pRect.Top = GameEvent.getEngine().getBoundary().Height() - Height
+    If Rect.Top > GameEvent.getEngine().getBoundary().Height() - Height Then
+        Rect.Top = GameEvent.getEngine().getBoundary().Height() - Height
     End If
     
     ' Set the frame of the action as the current frame to draw
     CurrentFrame = Actions(CurrentAction).NextFrame
-    Frames(CurrentFrame).CollisionRect.Align pRect
+    Frames(CurrentFrame).CollisionRect.Align Rect
     
+    BulletHandling Time
+End Sub
+Private Sub BulletHandling(ByVal Time As Long)
     ' Update position of bullets
     Dim Bullet As Sprite
     For Each Bullet In Bullets
@@ -190,18 +194,18 @@ Public Sub Sprite_Update(ByVal Time As Long)
     Next
     ' Remove bullets from array when not visible in screen
     RemoveBullets GameEvent.getEngine().getBoundary().Width
-    'Debug.Print Bullets.Count
 End Sub
 Private Sub RemoveBullets(ByVal Width As Long)
     Dim index As Integer: index = 1
     Dim Bullet As Sprite
     For Each Bullet In Bullets
-        If Bullet.Rect.Left > Width Then
+        If Bullet.Rect.Left > Width Or Bullet.IsAlive = False Then
             Bullets.Remove index
         End If
         index = index + 1
     Next
 End Sub
+
 Private Sub DrawBullets(ByRef Render As RenderingEngine)
     If IsEmpty(Bullets) Then
         Exit Sub
@@ -228,7 +232,7 @@ End Sub
 
 Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
     If Alive = True Then
-        Render.Draw Registry, FrameRect(), pRect
+        Render.Draw Registry, FrameRect(), Rect
     Else
         Explosion.Draw Render
     End If
@@ -244,7 +248,7 @@ Public Sub Sprite_Destroy()
         Exit Sub
     End If
     Alive = False
-    Explosion.Rect.Align pRect
+    Explosion.Rect.Align Rect
 End Sub
 
 Public Function Sprite_IsAlive() As Boolean
@@ -256,7 +260,7 @@ Public Property Get Sprite_Registry() As Integer
 End Property
 
 Private Sub Shoot(ByVal Time As Long)
-    If Time - BulletTick < 400 Then
+    If Time - BulletTick < 300 Then
         Exit Sub
     End If
     BulletTick = Time
@@ -264,5 +268,18 @@ Private Sub Shoot(ByVal Time As Long)
     Dim tmp As Sprite
     Set tmp = New CraftBullet
     Bullets.add tmp
-    tmp.Rect.Init pRect.Left + 22, pRect.Top + 12, tmp.Rect.Width, tmp.Rect.Height
+    tmp.Rect.Init Rect.Left + 22, Rect.Top + 12, tmp.Rect.Width, tmp.Rect.Height
+End Sub
+
+Public Sub Sprite_Collide(ByRef Other As Sprite)
+    If Rect.Collide(Other.Rect) And Other.IsAlive Then
+        Sprite_Destroy
+    End If
+    Dim Bullet As Sprite
+    For Each Bullet In Bullets
+        If Bullet.Rect.Collide(Other.Rect) And Other.IsAlive Then
+            Other.Destroy
+            Bullet.Destroy
+        End If
+    Next
 End Sub

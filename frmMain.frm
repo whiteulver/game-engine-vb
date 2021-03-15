@@ -35,8 +35,6 @@ Private Sub Form_GotFocus()
     Rendering.Init frmMain, Boundary
     GameEngine.Init Rendering, Boundary, State
     
-    DoEvents
-    
     GameEngine.run
     End
 End Sub
@@ -55,5 +53,5 @@ Private Sub Form_Load()
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
-    GameEngine.terminate
+    GameEngine.StopEngine
 End Sub

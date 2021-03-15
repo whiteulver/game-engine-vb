@@ -69,7 +69,8 @@ Public Sub GameState_Listen(GameEventIn As DomainEvent)
 End Sub
 
 Private Sub CheckCollide(ByRef Source As Sprite, ByRef Other As Sprite)
-    If Source.Rect.Collide(Other.Rect) Then
-        Source.Destroy
-    End If
+    Source.Collide Other
+    'If Source.Rect.Collide(Other.Rect) Then
+    '    Source.Destroy
+    'End If
 End Sub

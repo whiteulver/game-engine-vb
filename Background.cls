@@ -69,3 +69,6 @@ End Function
 Public Property Get Sprite_Registry() As Integer
     Sprite_Registry = Registry
 End Property
+
+Public Sub Sprite_Collide(ByRef Other As Sprite)
+End Sub

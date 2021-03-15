@@ -27,6 +27,7 @@ Private Sub Class_Initialize()
     Rect.Init 0, 0, 11, 6
     srcRect.Init 0, 5, 11, 6
 End Sub
+
 Public Sub Sprite_Init()
 End Sub
 
@@ -57,3 +58,6 @@ End Function
 Public Property Get Sprite_Registry() As Integer
     Sprite_Registry = 4
 End Property
+
+Public Sub Sprite_Collide(ByRef Other As Sprite)
+End Sub
