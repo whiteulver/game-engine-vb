@@ -17,6 +17,7 @@ Class=Alien; Alien.cls
 Class=Asteroid; Asteroid.cls
 Class=Frame; Frame.cls
 Class=Explosion; Explosion.cls
+Class=CraftBullet; CraftBullet.cls
 IconForm="frmMain"
 Startup="frmMain"
 HelpFile=""

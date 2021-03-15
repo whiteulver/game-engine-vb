@@ -6,7 +6,7 @@ BEGIN
   DataSourceBehavior  = 0  'vbNone
   MTSTransactionMode  = 0  'NotAnMTSObject
 END
-Attribute VB_Name = "Asteroid"
+Attribute VB_Name = "CraftBullet"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
@@ -14,48 +14,28 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements Sprite
 
-Private Speed As Integer
+Private Alive As Boolean
+Private Const Speed = 4
 Private Rect As Rectangle ' The rectal that defines the position of sprite in screen.
-Private srcRect As Rectangle ' The rectangle from asteroid sprite in image file.
-Private Type AsteroidType
-    srcX As Long
-    srcY As Long
-    Width As Long
-    Height As Long
-End Type
-Private Variants(1) As AsteroidType
+Private srcRect As Rectangle ' The rectangle from bullet sprite in image file.
+Private GameEvent As DomainEvent
 
 Private Sub Class_Initialize()
-    Variants(0).srcX = 145
-    Variants(0).srcY = 130
-    Variants(0).Width = 30
-    Variants(0).Height = 36
-    
-    Variants(1).srcX = 146
-    Variants(1).srcY = 170
-    Variants(1).Width = 30
-    Variants(1).Height = 29
-    
-    Dim Skin As Integer
-    Skin = Int((2 * Rnd) + 1)
-    Skin = Skin - 1
-    
+    Alive = True
     Set Rect = New Rectangle
-    Rect.Init 320, 50, Variants(Skin).Width, Variants(Skin).Height
     Set srcRect = New Rectangle
-    srcRect.Init Variants(Skin).srcX, Variants(Skin).srcY, Variants(Skin).Width, Variants(Skin).Height
-    Speed = 2
+    Rect.Init 0, 0, 11, 6
+    srcRect.Init 0, 5, 11, 6
 End Sub
-
 Public Sub Sprite_Init()
 End Sub
 
 Public Sub Sprite_Update(ByVal Time As Long)
-    Rect.Move -Speed, 0
+    Rect.Move Speed, 0
 End Sub
 
 Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
-    Render.Draw 2, srcRect, Rect
+    Render.Draw Sprite_Registry, srcRect, Rect
 End Sub
 
 Public Property Get Sprite_Rect() As Rectangle
@@ -63,14 +43,17 @@ Public Property Get Sprite_Rect() As Rectangle
 End Property
 
 Public Sub Sprite_Listen(ByRef GameEventIn As DomainEvent)
+    Set GameEvent = GameEventIn
 End Sub
 
 Public Sub Sprite_Destroy()
+    Alive = False
 End Sub
 
 Public Function Sprite_IsAlive() As Boolean
+    Sprite_IsAlive = Alive
 End Function
 
 Public Property Get Sprite_Registry() As Integer
-    Sprite_Registry = 2
+    Sprite_Registry = 4
 End Property

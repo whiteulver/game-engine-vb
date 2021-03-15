@@ -54,7 +54,7 @@ Public Sub run()
             T1 = GetTickCount
         End If
         If (GetTickCount - T3) >= 1000 Then
-            Debug.Print FrameCount
+            'Debug.Print FrameCount
             FrameCount = 0
             T3 = GetTickCount
         End If

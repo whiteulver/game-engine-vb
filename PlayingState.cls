@@ -34,10 +34,15 @@ Public Sub GameState_Init(ByRef RenderIn As RenderingEngine)
     Set cftSprite = New Craft
     Render.RegisterSprite cftSprite.Registry, App.Path & "\resources\pxplayer.bmp", App.Path & "\resources\pxplayer_m.bmp"
     
+    'Load Asteroid
     Set asteroidSprite = New Asteroid
     Render.RegisterSprite asteroidSprite.Registry, App.Path & "\resources\ProjectX_SE_level1_sprites.bmp", App.Path & "\resources\ProjectX_SE_level1_sprites_mask.bmp"
     
+    ' Register explosion image
     Render.RegisterSprite 3, App.Path & "\resources\ProjectX_SE_sprites1.bmp", App.Path & "\resources\ProjectX_SE_sprites1_mask.bmp"
+    
+    ' Register bullet image
+    Render.RegisterSprite 4, App.Path & "\resources\ProjectX_SE_sprites2.bmp", App.Path & "\resources\ProjectX_SE_sprites2_mask.bmp"
 End Sub
 
 Public Function GameState_State() As GameState
@@ -49,7 +54,9 @@ Public Sub GameState_Update(Time As Long)
     cftSprite.Listen GameEvent
     cftSprite.Update Time
     asteroidSprite.Update Time
+    ' Check collision of Craft and Asteroids
     CheckCollide cftSprite, asteroidSprite
+    ' Check collision of CraftBullet and Asteroids
 End Sub
 
 Public Sub GameState_Draw()

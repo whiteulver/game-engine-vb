@@ -26,11 +26,15 @@ Private Const Height As Integer = 24 ' Height of single sprite image
 Private Const Width As Integer = 32 ' Width of single sprite image
 Private Alive As Boolean
 Private Explosion As Sprite
+Private Bullets As New Collection
+Private BulletTick As Long
+Private BulletIndex As Integer
 
 Private Sub Class_Initialize()
     ' Define explosion sprite. When Craft is not Alive, delegate the Draw to Explosion sprite.
     Set Explosion = New Explosion
     Alive = True
+    BulletTick = 0: BulletIndex = 0
     Set pRect = New Rectangle
     ' Initial position of Sprite, up left corner.
     pRect.Init 0, 0, Width, Height
@@ -131,6 +135,10 @@ Public Sub Sprite_Update(ByVal Time As Long)
             CurrentAction = 2
         End If
         
+        If KeyCodes(4) = 88 Then ' Fire
+            Shoot Time
+        End If
+        
         If KeyCodes(0) = 0 And KeyCodes(1) = 0 And KeyCodes(2) = 0 _
                 And KeyCodes(3) = 0 Then
             If CurrentAction = 1 Or CurrentAction = 3 Then
@@ -174,8 +182,35 @@ Public Sub Sprite_Update(ByVal Time As Long)
     ' Set the frame of the action as the current frame to draw
     CurrentFrame = Actions(CurrentAction).NextFrame
     Frames(CurrentFrame).CollisionRect.Align pRect
+    
+    ' Update position of bullets
+    Dim Bullet As Sprite
+    For Each Bullet In Bullets
+        Bullet.Update Time
+    Next
+    ' Remove bullets from array when not visible in screen
+    RemoveBullets GameEvent.getEngine().getBoundary().Width
+    'Debug.Print Bullets.Count
 End Sub
-
+Private Sub RemoveBullets(ByVal Width As Long)
+    Dim index As Integer: index = 1
+    Dim Bullet As Sprite
+    For Each Bullet In Bullets
+        If Bullet.Rect.Left > Width Then
+            Bullets.Remove index
+        End If
+        index = index + 1
+    Next
+End Sub
+Private Sub DrawBullets(ByRef Render As RenderingEngine)
+    If IsEmpty(Bullets) Then
+        Exit Sub
+    End If
+    Dim b As Integer, Bullet As Sprite
+    For Each Bullet In Bullets
+        Bullet.Draw Render
+    Next
+End Sub
 Public Sub Sprite_Init()
 End Sub
 
@@ -197,6 +232,7 @@ Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
     Else
         Explosion.Draw Render
     End If
+    DrawBullets Render
 End Sub
 
 Private Function FrameRect() As Rectangle
@@ -218,3 +254,15 @@ End Function
 Public Property Get Sprite_Registry() As Integer
     Sprite_Registry = Registry
 End Property
+
+Private Sub Shoot(ByVal Time As Long)
+    If Time - BulletTick < 400 Then
+        Exit Sub
+    End If
+    BulletTick = Time
+
+    Dim tmp As Sprite
+    Set tmp = New CraftBullet
+    Bullets.add tmp
+    tmp.Rect.Init pRect.Left + 22, pRect.Top + 12, tmp.Rect.Width, tmp.Rect.Height
+End Sub

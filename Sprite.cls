@@ -15,13 +15,13 @@ Option Explicit
 
 Public Sub Init()
 End Sub
-
+' Updates the state of sprite. Including position etc. The position of sprite can be accessed from Rect property
 Public Sub Update(ByVal Time As Long)
 End Sub
 
 Public Sub Draw(ByRef Render As RenderingEngine)
 End Sub
-
+' Returns a Rectangle that represents the sprite position in screen
 Public Property Get Rect() As Rectangle
 End Property
 

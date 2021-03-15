@@ -92,8 +92,8 @@ End Sub
 
 Public Function getKeyCodes() As Integer()
     Dim KeyEvent As DomainEvent
-    Dim KeyCode(3) As Integer
-    KeyCode(0) = 0: KeyCode(1) = 0: KeyCode(2) = 0: KeyCode(3) = 0
+    Dim KeyCode(4) As Integer
+    KeyCode(0) = 0: KeyCode(1) = 0: KeyCode(2) = 0: KeyCode(3) = 0: KeyCode(4) = 0
     'KeyCode = 0
     
     GetKeyboardInput
@@ -112,6 +112,10 @@ Public Function getKeyCodes() As Integer()
     
     If Keyboard.btnDown Then
         KeyCode(3) = 2
+    End If
+    
+    If Keyboard.btnX Then
+        KeyCode(4) = 88
     End If
     
     getKeyCodes = KeyCode

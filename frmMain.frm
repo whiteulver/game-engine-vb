@@ -30,7 +30,7 @@ Private Sub Form_GotFocus()
     Set GameEngine = New Engine
     Set Rendering = New GdiRenderingEngine
     Dim State As GameState
-    Set State = New DemoState
+    Set State = New PlayingState
     
     Rendering.Init frmMain, Boundary
     GameEngine.Init Rendering, Boundary, State
