@@ -1,20 +1,19 @@
 VERSION 5.00
 Begin VB.Form frmMain 
    Appearance      =   0  'Flat
-   AutoRedraw      =   -1  'True
    BackColor       =   &H00000000&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Game Engine"
    ClientHeight    =   7680
-   ClientLeft      =   45
-   ClientTop       =   330
+   ClientLeft      =   48
+   ClientTop       =   336
    ClientWidth     =   9600
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   512
+   ScaleHeight     =   640
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   640
+   ScaleWidth      =   800
    StartUpPosition =   2  'CenterScreen
 End
 Attribute VB_Name = "frmMain"
@@ -23,6 +22,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Private GameEngine As Engine
+Attribute GameEngine.VB_VarHelpID = -1
 Private Rendering As RenderingEngine
 Private Boundary As Rectangle
 
@@ -32,7 +32,7 @@ Private Sub Form_GotFocus()
     Dim State As GameState
     Set State = New PlayingState
     
-    Rendering.Init frmMain, Boundary
+    Rendering.Init frmMain.hDC, Boundary
     GameEngine.Init Rendering, Boundary, State
     
     GameEngine.run

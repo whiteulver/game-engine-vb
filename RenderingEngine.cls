@@ -13,7 +13,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Public Sub Init(FormIn As Form, BoundaryIn As Rectangle)
+Public Sub Init(hDC As Long, BoundaryIn As Rectangle)
 End Sub
 
 Public Sub DrawToScreen()

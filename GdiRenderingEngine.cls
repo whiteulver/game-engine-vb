@@ -33,7 +33,7 @@ Private Declare Function FillRgn Lib "gdi32" (ByVal hDC As Long, ByVal hRgn As L
 Private Declare Function CreateSolidBrush Lib "gdi32" (ByVal crColor As Long) As Long
 Private Declare Function StretchBlt Lib "gdi32" (ByVal hDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal nSrcWidth As Long, ByVal nSrcHeight As Long, ByVal dwRop As Long) As Long
 
-Private pForm As Form
+Private phDC As Long
 Private DeviceContext As Long
 Private BlackBuffer As Long ' Black bitmap to erase contents in screen
 Private Boundary As Rectangle
@@ -42,8 +42,8 @@ Private ContextIndex As Long
 Private RegisteredContexts() As Long
 Private RegisteredMaskContexts() As Long
 
-Public Sub RenderingEngine_Init(FormIn As Form, BoundaryIn As Rectangle)
-    Set pForm = FormIn
+Public Sub RenderingEngine_Init(hDC As Long, BoundaryIn As Rectangle)
+    phDC = hDC
     Set Boundary = BoundaryIn
     DeviceContext = CreateContext
     CreateBlackBuffer
@@ -112,8 +112,8 @@ Private Sub CreateBlackBuffer()
     DeleteDC tmpContext
 End Sub
 Public Sub RenderingEngine_DrawToScreen()
-    StretchBlt pForm.hDC, 0, 0, Boundary.Width * 2, Boundary.Height * 2, DeviceContext, 0, 0, Boundary.Width, Boundary.Height, vbSrcCopy
-    pForm.Refresh
+    StretchBlt phDC, 0, 0, Boundary.Width * 2, Boundary.Height * 2, DeviceContext, 0, 0, Boundary.Width, Boundary.Height, vbSrcCopy
+    'pForm.Refresh
 End Sub
 
 Public Sub RenderingEngine_ClearObjects()
@@ -123,7 +123,7 @@ Public Sub RenderingEngine_ClearObjects()
     Next
     DeleteDC DeviceContext
     DeleteDC BlackBuffer
-    ReleaseDC 0, pForm.hDC
+    ReleaseDC 0, phDC
 End Sub
 
 Private Sub AddContext(context As Long)
