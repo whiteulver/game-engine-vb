@@ -31,7 +31,7 @@ End Sub
 Public Sub Sprite_Init()
 End Sub
 
-Public Sub Sprite_Update(ByVal Time As Long)
+Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
     Rect.Move Speed, 0
 End Sub
 

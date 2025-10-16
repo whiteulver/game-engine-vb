@@ -23,6 +23,8 @@ Private State As GameState
 
 Private Declare Function GetTickCount Lib "kernel32" () As Long
 Private Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+Private Declare Function QueryPerformanceCounter Lib "kernel32" (lpPerformanceCount As Currency) As Long
+Private Declare Function QueryPerformanceFrequency Lib "kernel32" (lpFrequency As Currency) As Long
 
 Public Sub Init(ByRef RenderIn As RenderingEngine, ByVal BoundaryIn As Rectangle, ByVal StateIn As GameState)
     Set Rendering = RenderIn
@@ -34,25 +36,31 @@ Public Sub Init(ByRef RenderIn As RenderingEngine, ByVal BoundaryIn As Rectangle
 End Sub
 
 Public Sub run()
-    Dim T1 As Long, T2 As Long, FrameCount As Long, T3 As Long
+    Dim FrameCount As Long, EndTime As Long, Delta As Double
+    Dim TStart As Currency, TNow As Currency
+    Dim Frequency As Currency
+    Dim ElapsedMs As Double
     FrameCount = 0
     IsRunning = True
-    T1 = GetTickCount
-    T3 = GetTickCount
+    EndTime = GetTickCount
+    QueryPerformanceFrequency Frequency
+    QueryPerformanceCounter TStart
     Do
         DoEvents
         State.Listen KeyboardEvent
-        State.Update GetTickCount
+        QueryPerformanceCounter TNow
+        ElapsedMs = (TNow - TStart) / Frequency * 1000   ' convert to ms
+        State.Update TNow / Frequency * 1000, ElapsedMs
         ' Draw
         Rendering.Cls
         State.Draw
         Rendering.DrawToScreen
         Set State = State.State
         FrameCount = FrameCount + 1
-        If (GetTickCount - T3) >= 1000 Then
+        If (ElapsedMs) >= 1000 Then
             ' Debug.Print FrameCount
             FrameCount = 0
-            T3 = GetTickCount
+            QueryPerformanceCounter TStart  ' reset start time
         End If
         Sleep MsDelay
     Loop Until IsRunning = False

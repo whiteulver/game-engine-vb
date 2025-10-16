@@ -54,9 +54,9 @@ End Sub
 Public Sub Sprite_Init()
 End Sub
 
-Public Sub Sprite_Update(ByVal Time As Long)
+Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
     If Alive = False Then
-        Explosion.Update Time
+        Explosion.Update Time, Delta
         Exit Sub
     End If
     Rect.Move -Speed, 0

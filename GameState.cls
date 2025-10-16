@@ -16,7 +16,7 @@ Option Explicit
 Public Function State() As GameState
 End Function
 
-Public Sub Update(Time As Long)
+Public Sub Update(Time As Long, Delta As Double)
 End Sub
 
 Public Sub Draw()

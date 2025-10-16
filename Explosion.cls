@@ -79,7 +79,7 @@ End Sub
 Public Sub Sprite_Init()
 End Sub
 
-Public Sub Sprite_Update(ByVal Time As Long)
+Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
     ' Set the frame of the action as the current frame to draw
     CurrentFrame = Actions(CurrentAction).NextFrame
     ExplodeFrames(CurrentFrame).CollisionRect.Align pRect

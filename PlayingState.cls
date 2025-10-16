@@ -49,11 +49,11 @@ Public Function GameState_State() As GameState
     Set GameState_State = Me
 End Function
 
-Public Sub GameState_Update(Time As Long)
-    bgnSprite.Update Time
+Public Sub GameState_Update(Time As Long, Delta As Double)
+    bgnSprite.Update Time, Delta
     cftSprite.Listen GameEvent
-    cftSprite.Update Time
-    asteroidSprite.Update Time
+    cftSprite.Update Time, Delta
+    asteroidSprite.Update Time, Delta
     ' Check collision of Craft and Asteroids
     CheckCollide cftSprite, asteroidSprite
     ' Check collision of CraftBullet and Asteroids

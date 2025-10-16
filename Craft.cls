@@ -102,13 +102,13 @@ Private Sub Class_Initialize()
     Next
 End Sub
 
-Public Sub Sprite_Update(ByVal Time As Long)
+Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
     Dim dstX As Long
     Dim dstY As Long
     
     If Alive = False Then
-        Explosion.Update Time
-        BulletHandling Time
+        Explosion.Update Time, Delta
+        BulletHandling Time, Delta
         Exit Sub
     End If
     
@@ -137,7 +137,7 @@ Public Sub Sprite_Update(ByVal Time As Long)
         End If
         
         If KeyCodes(4) = 88 Then ' Fire
-            Shoot Time
+            Shoot Time, Delta
         End If
         
         If KeyCodes(0) = 0 And KeyCodes(1) = 0 And KeyCodes(2) = 0 _
@@ -184,13 +184,13 @@ Public Sub Sprite_Update(ByVal Time As Long)
     CurrentFrame = Actions(CurrentAction).NextFrame
     Frames(CurrentFrame).CollisionRect.Align Rect
     
-    BulletHandling Time
+    BulletHandling Time, Delta
 End Sub
-Private Sub BulletHandling(ByVal Time As Long)
+Private Sub BulletHandling(ByVal Time As Long, Delta As Double)
     ' Update position of bullets
     Dim Bullet As Sprite
     For Each Bullet In Bullets
-        Bullet.Update Time
+        Bullet.Update Time, Delta
     Next
     ' Remove bullets from array when not visible in screen
     RemoveBullets GameEvent.getEngine().getBoundary().Width
@@ -259,7 +259,7 @@ Public Property Get Sprite_Registry() As Integer
     Sprite_Registry = Registry
 End Property
 
-Private Sub Shoot(ByVal Time As Long)
+Private Sub Shoot(ByVal Time As Long, Delta As Double)
     If Time - BulletTick < 300 Then
         Exit Sub
     End If
