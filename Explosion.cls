@@ -22,11 +22,15 @@ Private CurrentFrame As Integer
 Private Const Height As Integer = 32 ' Height of single sprite image
 Private Const Width As Integer = 32 ' Width of single sprite image
 Private pRect As Rectangle
+Private pShouldRecycle As Boolean
+Private Alive As Boolean
 
 Private Sub Class_Initialize()
+    pShouldRecycle = False
     CurrentAction = 0
     Set pRect = New Rectangle
     pRect.Init 0, 0, Width, Height
+    Alive = True
     
     Dim Frames_6(15) As Integer
     ' Set up explosion animation
@@ -83,6 +87,9 @@ Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
     ' Set the frame of the action as the current frame to draw
     CurrentFrame = Actions(CurrentAction).NextFrame
     ExplodeFrames(CurrentFrame).CollisionRect.Align pRect
+    If Actions(CurrentAction).IsAnimatinEnded Then
+        pShouldRecycle = True
+    End If
 End Sub
 
 Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
@@ -97,8 +104,10 @@ Public Sub Sprite_Listen(ByRef GameEventIn As DomainEvent)
 End Sub
 
 Public Sub Sprite_Destroy()
+    Alive = False
 End Sub
 Public Function Sprite_IsAlive() As Boolean
+    Sprite_IsAlive = Alive
 End Function
 
 Public Property Get Sprite_Registry() As Integer
@@ -107,3 +116,8 @@ End Property
 
 Public Sub Sprite_Collide(ByRef Other As Sprite)
 End Sub
+Public Sub Sprite_Collided(ByRef Other As Sprite)
+End Sub
+Public Function Sprite_ShouldRecycle() As Boolean
+    Sprite_ShouldRecycle = Not Alive And pShouldRecycle
+End Function

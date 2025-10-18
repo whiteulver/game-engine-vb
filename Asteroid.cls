@@ -25,30 +25,36 @@ Private Type AsteroidType
 End Type
 Private Variants(1) As AsteroidType
 Private Alive As Boolean
+Private Life As Integer
 Private Explosion As Sprite
 
 Private Sub Class_Initialize()
+    Randomize Timer
     Alive = True
-    Set Explosion = New Explosion
-    Variants(0).srcX = 145
-    Variants(0).srcY = 130
-    Variants(0).Width = 30
-    Variants(0).Height = 36
+    Set Explosion = New ParticleExplosion
+    With Variants(0)
+        .srcX = 145
+        .srcY = 130
+        .Width = 30
+        .Height = 36
+    End With
     
-    Variants(1).srcX = 146
-    Variants(1).srcY = 170
-    Variants(1).Width = 30
-    Variants(1).Height = 29
+    With Variants(1)
+        .srcX = 146
+        .srcY = 170
+        .Width = 30
+        .Height = 29
+    End With
     
     Dim Skin As Integer
-    Skin = Int((2 * Rnd) + 1)
-    Skin = Skin - 1
+    Skin = Int(Rnd() * 2)
     
     Set Rect = New Rectangle
     Rect.Init 320, 50, Variants(Skin).Width, Variants(Skin).Height
     Set srcRect = New Rectangle
     srcRect.Init Variants(Skin).srcX, Variants(Skin).srcY, Variants(Skin).Width, Variants(Skin).Height
     Speed = 2
+    Life = 3
 End Sub
 
 Public Sub Sprite_Init()
@@ -83,6 +89,7 @@ Public Sub Sprite_Destroy()
     End If
     Alive = False
     Explosion.Rect.Align Rect
+    Explosion.Init
 End Sub
 
 Public Function Sprite_IsAlive() As Boolean
@@ -95,3 +102,11 @@ End Property
 
 Public Sub Sprite_Collide(ByRef Other As Sprite)
 End Sub
+Public Sub Sprite_Collided(ByRef Other As Sprite)
+    If Other.IsAlive = False Then Exit Sub:
+    Life = Life - 1
+    If Life <= 0 Then Sprite_Destroy:
+End Sub
+Public Function Sprite_ShouldRecycle() As Boolean
+    Sprite_ShouldRecycle = Not Alive And Explosion.ShouldRecycle
+End Function

@@ -46,7 +46,14 @@ Public Sub GameState_Init(ByRef RenderIn As RenderingEngine)
 End Sub
 
 Public Function GameState_State() As GameState
-    Set GameState_State = Me
+    If cftSprite.ShouldRecycle Then
+        Dim tmpState As GameState
+        Set tmpState = New PlayingState
+        tmpState.Init Render
+        Set GameState_State = tmpState
+    Else
+        Set GameState_State = Me
+    End If
 End Function
 
 Public Sub GameState_Update(Time As Long, Delta As Double)
@@ -56,7 +63,6 @@ Public Sub GameState_Update(Time As Long, Delta As Double)
     asteroidSprite.Update Time, Delta
     ' Check collision of Craft and Asteroids
     CheckCollide cftSprite, asteroidSprite
-    ' Check collision of CraftBullet and Asteroids
 End Sub
 
 Public Sub GameState_Draw()
@@ -70,7 +76,4 @@ End Sub
 
 Private Sub CheckCollide(ByRef Source As Sprite, ByRef Other As Sprite)
     Source.Collide Other
-    'If Source.Rect.Collide(Other.Rect) Then
-    '    Source.Destroy
-    'End If
 End Sub

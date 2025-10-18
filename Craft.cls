@@ -29,10 +29,10 @@ Private Explosion As Sprite
 Private Bullets As New Collection
 Private BulletTick As Long
 Private BulletIndex As Integer
+Private RecycleTimer As Double
 
 Private Sub Class_Initialize()
-    ' Define explosion sprite. When Craft is not Alive, delegate the Draw to Explosion sprite.
-    Set Explosion = New Explosion
+    Set Explosion = New ParticleExplosion
     Alive = True
     BulletTick = 0: BulletIndex = 0
     Set Rect = New Rectangle
@@ -109,6 +109,7 @@ Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
     If Alive = False Then
         Explosion.Update Time, Delta
         BulletHandling Time, Delta
+        RecycleTimer = RecycleTimer + Delta
         Exit Sub
     End If
     
@@ -135,7 +136,9 @@ Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
             dstY = dstY + Speed
             CurrentAction = 2
         End If
-        
+        If KeyCodes(4) = 89 Then
+            Sprite_Destroy
+        End If
         If KeyCodes(4) = 88 Then ' Fire
             Shoot Time, Delta
         End If
@@ -199,7 +202,7 @@ Private Sub RemoveBullets(ByVal Width As Long)
     Dim index As Integer: index = 1
     Dim Bullet As Sprite
     For Each Bullet In Bullets
-        If Bullet.Rect.Left > Width Or Bullet.IsAlive = False Then
+        If Bullet.Rect.Left > Width Or Bullet.ShouldRecycle = True Then
             Bullets.Remove index
         End If
         index = index + 1
@@ -232,6 +235,7 @@ End Sub
 
 Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
     If Alive = True Then
+        'Render.DrawCircle 150, 150, 30, vbRed
         Render.Draw Registry, FrameRect(), Rect
     Else
         Explosion.Draw Render
@@ -249,6 +253,7 @@ Public Sub Sprite_Destroy()
     End If
     Alive = False
     Explosion.Rect.Align Rect
+    Explosion.Init
 End Sub
 
 Public Function Sprite_IsAlive() As Boolean
@@ -278,8 +283,13 @@ Public Sub Sprite_Collide(ByRef Other As Sprite)
     Dim Bullet As Sprite
     For Each Bullet In Bullets
         If Bullet.Rect.Collide(Other.Rect) And Other.IsAlive Then
-            Other.Destroy
-            Bullet.Destroy
+            Other.Collided Bullet
+            Bullet.Collided Other
         End If
     Next
 End Sub
+Public Sub Sprite_Collided(ByRef Other As Sprite)
+End Sub
+Public Function Sprite_ShouldRecycle() As Boolean
+    Sprite_ShouldRecycle = Not Alive And Explosion.ShouldRecycle And RecycleTimer > 80000
+End Function

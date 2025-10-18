@@ -118,5 +118,8 @@ Public Function getKeyCodes() As Integer()
         KeyCode(4) = 88
     End If
     
+    If Keyboard.btnA Then
+        KeyCode(4) = 89
+    End If
     getKeyCodes = KeyCode
 End Function

@@ -51,7 +51,6 @@ End Sub
 
 Public Sub Sprite_Destroy()
 End Sub
-
 Public Function Sprite_IsAlive() As Boolean
 End Function
 Public Property Get Sprite_Registry() As Integer
@@ -60,3 +59,8 @@ End Property
 
 Public Sub Sprite_Collide(ByRef Other As Sprite)
 End Sub
+Public Sub Sprite_Collided(ByRef Other As Sprite)
+End Sub
+Public Function Sprite_ShouldRecycle() As Boolean
+    Sprite_ShouldRecycle = False
+End Function

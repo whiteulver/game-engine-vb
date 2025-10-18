@@ -25,6 +25,7 @@ Private GameEngine As Engine
 Attribute GameEngine.VB_VarHelpID = -1
 Private Rendering As RenderingEngine
 Private Boundary As Rectangle
+Private Declare Function ShowCursor Lib "user32" (ByVal bShow As Long) As Long
 
 Private Sub Form_GotFocus()
     Set GameEngine = New Engine
@@ -50,8 +51,11 @@ Private Sub Form_Load()
     Boundary.Init 0, 0, 320, 256
     Me.Height = Boundary.Height() * 2 * (Height / ScaleHeight)
     Me.Width = Boundary.Width * 2 * (Width / ScaleWidth)
+
+    ShowCursor False
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
+    ShowCursor True
     GameEngine.StopEngine
 End Sub

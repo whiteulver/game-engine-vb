@@ -30,3 +30,6 @@ End Sub
 ' Draw a registered sprite by coping the srcRect of sprite image to the destRect in screen
 Public Sub Draw(Name As Integer, srcRect As Rectangle, destRect As Rectangle)
 End Sub
+
+Public Sub DrawCircle(X As Long, Y As Long, Radius As Long, Color As Long)
+End Sub

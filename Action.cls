@@ -19,6 +19,7 @@ Private Tick As Long ' Keep the ticks that have passed since the begining of the
 Private Frames() As Integer ' An array of the frame indexes
 Private Delay As Integer ' The Delay in ticks between the frames.
 Private FrameIndex As Integer
+Private AnimationEnded As Boolean
 
 Public Sub Init(FramesIn() As Integer, DelayIn As Integer)
     Frames = FramesIn
@@ -33,7 +34,8 @@ Public Function NextFrame() As Integer
             Tick = 0
             FrameIndex = FrameIndex + 1
             If FrameIndex > UBound(Frames) Then
-                FrameIndex = UBound(Frames)
+                FrameIndex = UBound(Frames) ' Animation ended
+                AnimationEnded = True
             End If
         End If
         Tick = Tick + 1
@@ -44,8 +46,11 @@ Public Sub Reset()
     Tick = 0
     FrameIndex = 0
 End Sub
-
+Public Function IsAnimatinEnded() As Boolean
+    IsAnimatinEnded = AnimationEnded
+End Function
 Private Sub Class_Initialize()
     Tick = 0
     FrameIndex = 0
+    AnimationEnded = False
 End Sub

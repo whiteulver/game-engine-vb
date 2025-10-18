@@ -32,6 +32,8 @@ Private Declare Function PathToRegion Lib "gdi32" (ByVal hDC As Long) As Long
 Private Declare Function FillRgn Lib "gdi32" (ByVal hDC As Long, ByVal hRgn As Long, ByVal hBrush As Long) As Long
 Private Declare Function CreateSolidBrush Lib "gdi32" (ByVal crColor As Long) As Long
 Private Declare Function StretchBlt Lib "gdi32" (ByVal hDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal nSrcWidth As Long, ByVal nSrcHeight As Long, ByVal dwRop As Long) As Long
+Private Declare Function CreatePen Lib "gdi32" (ByVal nPenStyle As Long, ByVal nWidth As Long, ByVal crColor As Long) As Long
+Private Declare Function Ellipse Lib "gdi32" (ByVal hDC As Long, ByVal X1 As Long, ByVal Y1 As Long, ByVal X2 As Long, ByVal Y2 As Long) As Long
 
 Private phDC As Long
 Private DeviceContext As Long
@@ -42,7 +44,7 @@ Private ContextIndex As Long
 Private RegisteredContexts() As Long
 Private RegisteredMaskContexts() As Long
 
-Public Sub RenderingEngine_Init(hDC As Long, BoundaryIn As Rectangle)
+Public Sub RenderingEngine_Init(ByRef hDC As Long, BoundaryIn As Rectangle)
     phDC = hDC
     Set Boundary = BoundaryIn
     DeviceContext = CreateContext
@@ -90,7 +92,7 @@ End Sub
 Private Sub CreateBlackBuffer()
     Dim Region As Long
     Dim tmpContext As Long
-    Dim brush As Long
+    Dim Brush As Long
     
     tmpContext = CreateContext
     
@@ -102,10 +104,10 @@ Private Sub CreateBlackBuffer()
     EndPath tmpContext
     Region = PathToRegion(tmpContext)
     
-    brush = CreateSolidBrush(RGB(0, 0, 0))
-    SelectObject tmpContext, brush
-    FillRgn tmpContext, Region, brush
-    DeleteObject brush
+    Brush = CreateSolidBrush(RGB(0, 0, 0))
+    SelectObject tmpContext, Brush
+    FillRgn tmpContext, Region, Brush
+    DeleteObject Brush
     DeleteObject Region
 
     BlackBuffer = tmpContext
@@ -113,7 +115,6 @@ Private Sub CreateBlackBuffer()
 End Sub
 Public Sub RenderingEngine_DrawToScreen()
     StretchBlt phDC, 0, 0, Boundary.Width * 2, Boundary.Height * 2, DeviceContext, 0, 0, Boundary.Width, Boundary.Height, vbSrcCopy
-    'pForm.Refresh
 End Sub
 
 Public Sub RenderingEngine_ClearObjects()
@@ -149,4 +150,29 @@ Public Sub RenderingEngine_Draw(Name As Integer, srcRect As Rectangle, destRect 
     
     BitBlt DeviceContext, destRect.Left, destRect.Top, srcRect.Width, srcRect.Height, mask, srcRect.Left, srcRect.Top, vbSrcAnd
     BitBlt DeviceContext, destRect.Left, destRect.Top, srcRect.Width, srcRect.Height, img, srcRect.Left, srcRect.Top, vbSrcPaint
+End Sub
+Public Sub RenderingEngine_DrawCircle(X As Long, Y As Long, Radius As Long, Color As Long)
+    Dim Pen As Long
+    Dim Brush As Long
+    Dim oldPen As Long
+    Dim oldBrush As Long
+
+    ' Create outline and fill
+    Pen = CreatePen(0, 1, Color)
+    Brush = CreateSolidBrush(Color)
+
+    ' Select them into the DC, keeping the old ones
+    oldPen = SelectObject(DeviceContext, Pen)
+    oldBrush = SelectObject(DeviceContext, Brush)
+
+    ' Draw circle centered at (X,Y)
+    Ellipse DeviceContext, X - Radius, Y - Radius, X + Radius, Y + Radius
+
+    ' Restore original pen/brush
+    SelectObject DeviceContext, oldPen
+    SelectObject DeviceContext, oldBrush
+
+    ' Delete ours to avoid leaks
+    DeleteObject Pen
+    DeleteObject Brush
 End Sub

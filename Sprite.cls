@@ -39,3 +39,9 @@ End Property
 
 Public Sub Collide(ByRef Other As Sprite)
 End Sub
+
+Public Sub Collided(ByRef Other As Sprite)
+End Sub
+
+Public Function ShouldRecycle() As Boolean
+End Function
