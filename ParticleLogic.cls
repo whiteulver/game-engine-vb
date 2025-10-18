@@ -29,7 +29,6 @@ Private pAlive As Boolean
 Private pParticleCount As Long
 Private pRadiusGrow As Single
 Public Sub Class_Initialize()
-    Randomize Timer
 End Sub
 Public Property Get Alive() As Boolean
     Alive = pAlive

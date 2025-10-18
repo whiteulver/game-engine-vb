@@ -265,7 +265,7 @@ Public Property Get Sprite_Registry() As Integer
 End Property
 
 Private Sub Shoot(ByVal Time As Long, Delta As Double)
-    If Time - BulletTick < 300 Then
+    If Time - BulletTick < 200 Then
         Exit Sub
     End If
     BulletTick = Time

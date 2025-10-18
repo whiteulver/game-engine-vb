@@ -52,10 +52,10 @@ Private Sub Form_Load()
     Me.Height = Boundary.Height() * 2 * (Height / ScaleHeight)
     Me.Width = Boundary.Width * 2 * (Width / ScaleWidth)
 
-    ShowCursor False
+    'ShowCursor False
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
-    ShowCursor True
+    'ShowCursor True
     GameEngine.StopEngine
 End Sub

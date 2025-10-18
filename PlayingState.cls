@@ -20,7 +20,7 @@ Private GameEvent As DomainEvent
 Private cftSprite As Sprite
 Private bgnSprite As Sprite
 Private alienSprite As Sprite
-Private asteroidSprite As Sprite
+Private asteroidSpawner As Sprite
 
 Public Sub GameState_Init(ByRef RenderIn As RenderingEngine)
 
@@ -35,8 +35,8 @@ Public Sub GameState_Init(ByRef RenderIn As RenderingEngine)
     Render.RegisterSprite cftSprite.Registry, App.Path & "\resources\pxplayer.bmp", App.Path & "\resources\pxplayer_m.bmp"
     
     'Load Asteroid
-    Set asteroidSprite = New Asteroid
-    Render.RegisterSprite asteroidSprite.Registry, App.Path & "\resources\ProjectX_SE_level1_sprites.bmp", App.Path & "\resources\ProjectX_SE_level1_sprites_mask.bmp"
+    Set asteroidSpawner = New AsteroidBatchSpawner
+    Render.RegisterSprite asteroidSpawner.Registry, App.Path & "\resources\ProjectX_SE_level1_sprites.bmp", App.Path & "\resources\ProjectX_SE_level1_sprites_mask.bmp"
     
     ' Register explosion image
     Render.RegisterSprite 3, App.Path & "\resources\ProjectX_SE_sprites1.bmp", App.Path & "\resources\ProjectX_SE_sprites1_mask.bmp"
@@ -60,20 +60,39 @@ Public Sub GameState_Update(Time As Long, Delta As Double)
     bgnSprite.Update Time, Delta
     cftSprite.Listen GameEvent
     cftSprite.Update Time, Delta
-    asteroidSprite.Update Time, Delta
+    asteroidSpawner.Update Time, Delta
     ' Check collision of Craft and Asteroids
-    CheckCollide cftSprite, asteroidSprite
+    CheckCollideWithAsteroids cftSprite, asteroidSpawner
 End Sub
 
 Public Sub GameState_Draw()
     bgnSprite.Draw Render
-    asteroidSprite.Draw Render
+    asteroidSpawner.Draw Render
     cftSprite.Draw Render
 End Sub
 Public Sub GameState_Listen(GameEventIn As DomainEvent)
     Set GameEvent = GameEventIn
 End Sub
+Private Sub CheckCollideWithAsteroids(ByRef Source As Sprite, ByRef Spawner As Sprite)
+    ' Cast the spawner to AsteroidBatchSpawner to access its methods
+    Dim asteroidManager As AsteroidBatchSpawner
+    Set asteroidManager = Spawner
 
+    ' Get all active asteroids
+    Dim activeAsteroids As Collection
+    Set activeAsteroids = asteroidManager.GetActiveAsteroids
+    ' Collections handle empty cases naturally
+    If activeAsteroids.Count = 0 Then
+        Exit Sub
+    End If
+    ' Check collision with each active asteroid
+    Dim hAsteroid As Asteroid
+    For Each hAsteroid In activeAsteroids
+        If hAsteroid.Sprite_IsAlive Then
+            Source.Collide hAsteroid
+        End If
+    Next hAsteroid
+End Sub
 Private Sub CheckCollide(ByRef Source As Sprite, ByRef Other As Sprite)
     Source.Collide Other
 End Sub

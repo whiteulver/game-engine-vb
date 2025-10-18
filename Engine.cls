@@ -30,8 +30,8 @@ Public Sub Init(ByRef RenderIn As RenderingEngine, ByVal BoundaryIn As Rectangle
     Set Rendering = RenderIn
     Set Boundary = BoundaryIn
     Set State = StateIn
+    Randomize Timer
     State.Init Rendering
-
     Set Keyboard = New KeyboardInput
 End Sub
 

@@ -16,7 +16,7 @@ Implements Sprite
 
 Private Speed As Integer
 Private Rect As Rectangle ' The rectal that defines the position of sprite in screen.
-Private srcRect As Rectangle ' The rectangle from asteroid sprite in image file.
+Private srcRect As Rectangle ' The rectangle from Asteroid sprite in image file.
 Private Type AsteroidType
     srcX As Long
     srcY As Long
@@ -27,11 +27,15 @@ Private Variants(1) As AsteroidType
 Private Alive As Boolean
 Private Life As Integer
 Private Explosion As Sprite
+Private Skin As Integer
+
 
 Private Sub Class_Initialize()
-    Randomize Timer
     Alive = True
-    Set Explosion = New ParticleExplosion
+    Life = 2
+    ' Randomize speed slightly
+    Speed = 2 + Int(Rnd() * 2) ' Speed between 2-3
+
     With Variants(0)
         .srcX = 145
         .srcY = 130
@@ -45,16 +49,12 @@ Private Sub Class_Initialize()
         .Width = 30
         .Height = 29
     End With
-    
-    Dim Skin As Integer
     Skin = Int(Rnd() * 2)
-    
+
     Set Rect = New Rectangle
     Rect.Init 320, 50, Variants(Skin).Width, Variants(Skin).Height
     Set srcRect = New Rectangle
     srcRect.Init Variants(Skin).srcX, Variants(Skin).srcY, Variants(Skin).Width, Variants(Skin).Height
-    Speed = 2
-    Life = 3
 End Sub
 
 Public Sub Sprite_Init()
@@ -88,6 +88,7 @@ Public Sub Sprite_Destroy()
         Exit Sub
     End If
     Alive = False
+    Set Explosion = New ParticleExplosion
     Explosion.Rect.Align Rect
     Explosion.Init
 End Sub
@@ -108,5 +109,10 @@ Public Sub Sprite_Collided(ByRef Other As Sprite)
     If Life <= 0 Then Sprite_Destroy:
 End Sub
 Public Function Sprite_ShouldRecycle() As Boolean
-    Sprite_ShouldRecycle = Not Alive And Explosion.ShouldRecycle
+    If Not Alive And Not (Explosion Is Nothing) Then
+        Sprite_ShouldRecycle = Explosion.ShouldRecycle
+        Exit Function
+    End If
+    Sprite_ShouldRecycle = False
+
 End Function
