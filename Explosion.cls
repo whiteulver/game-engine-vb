@@ -89,6 +89,7 @@ Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
     ExplodeFrames(CurrentFrame).CollisionRect.Align pRect
     If Actions(CurrentAction).IsAnimatinEnded Then
         pShouldRecycle = True
+        Alive = False
     End If
 End Sub
 

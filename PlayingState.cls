@@ -32,19 +32,19 @@ Public Sub GameState_Init(ByRef RenderIn As RenderingEngine)
 
     ' Load Craft
     Set cftSprite = New Craft
-    Render.RegisterSprite cftSprite.Registry, App.Path & "\resources\pxplayer.bmp", App.Path & "\resources\pxplayer_m.bmp"
+    Render.RegisterSprite cftSprite.Registry, App.Path & "\resources\pxplayer.bmp", App.Path & "\resources\pxplayer_m.bmp", True, RGB(0, 0, 0)
     
     'Load Asteroid
     Set asteroidSpawner = New AsteroidBatchSpawner
-    Render.RegisterSprite asteroidSpawner.Registry, App.Path & "\resources\ProjectX_SE_level1_sprites.bmp", App.Path & "\resources\ProjectX_SE_level1_sprites_mask.bmp"
+    Render.RegisterSprite asteroidSpawner.Registry, App.Path & "\resources\ProjectX_SE_level1_sprites.bmp", App.Path & "\resources\ProjectX_SE_level1_sprites_mask.bmp", True, RGB(0, 0, 0)
     
     ' Register explosion image
-    Render.RegisterSprite 3, App.Path & "\resources\ProjectX_SE_sprites1.bmp", App.Path & "\resources\ProjectX_SE_sprites1_mask.bmp"
+    Render.RegisterSprite 3, App.Path & "\resources\ProjectX_SE_sprites1.bmp", App.Path & "\resources\ProjectX_SE_sprites1_mask.bmp", True, RGB(0, 0, 0)
     
     ' Register bullet image
-    Render.RegisterSprite 4, App.Path & "\resources\ProjectX_SE_sprites2.bmp", App.Path & "\resources\ProjectX_SE_sprites2_mask.bmp"
+    Render.RegisterSprite 4, App.Path & "\resources\ProjectX_SE_sprites2.bmp", App.Path & "\resources\ProjectX_SE_sprites2_mask.bmp", True, RGB(0, 0, 0)
 
-    Render.BuildParticleAtlas 5
+    'Render.BuildParticleAtlas 5
 End Sub
 
 Public Function GameState_State() As GameState
@@ -59,9 +59,11 @@ Public Function GameState_State() As GameState
 End Function
 
 Public Sub GameState_Update(Time As Long, Delta As Double)
+    bgnSprite.Listen GameEvent
     bgnSprite.Update Time, Delta
     cftSprite.Listen GameEvent
     cftSprite.Update Time, Delta
+    asteroidSpawner.Listen GameEvent
     asteroidSpawner.Update Time, Delta
     ' Check collision of Craft and Asteroids
     CheckCollideWithAsteroids cftSprite, asteroidSpawner

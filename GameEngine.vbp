@@ -1,4 +1,5 @@
 Type=Exe
+Reference=*\G{E1211242-8E94-11D1-8808-00C04FC2C602}#1.0#0#C:\WINDOWS\system32\dx7vb.dll#DirectX 7 for Visual Basic Type Library
 Form=frmMain.frm
 Class=Engine; Engine.cls
 Class=DomainEvent; DomainEvent.cls
@@ -22,6 +23,7 @@ Class=ParticleExplosion; ParticleExplosion.cls
 Class=ParticleLogic; ParticleLogic.cls
 Class=BulletExplosion; BulletExplosion.cls
 Class=AsteroidBatchSpawner; AsteroidBatchSpawner.cls
+Class=DirectDrawRenderingEngine; DirectDrawRenderingEngine.cls
 IconForm="frmMain"
 Startup="frmMain"
 HelpFile=""

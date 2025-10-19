@@ -16,7 +16,7 @@ Implements Sprite
 
 Private Const Registry As Integer = 1
 Private Speed As Integer
-Private Rect As Rectangle
+Private RECT As Rectangle
 Private GameEvent As DomainEvent
 Private Actions(4) As Action
 Private CurrentAction As Integer
@@ -32,12 +32,12 @@ Private BulletIndex As Integer
 Private RecycleTimer As Double
 
 Private Sub Class_Initialize()
-    Set Explosion = New ParticleExplosion
+    Set Explosion = New Explosion
     Alive = True
     BulletTick = 0: BulletIndex = 0
-    Set Rect = New Rectangle
+    Set RECT = New Rectangle
     ' Initial position of Sprite, up left corner.
-    Rect.Init 0, 0, Width, Height
+    RECT.Init 0, 0, Width, Height
     ' Initial Speed
     Speed = 2
     ' Current action is the Flying
@@ -164,28 +164,28 @@ Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
     Next
     
     ' Move internal Rect
-    Rect.Move dstX, dstY
+    RECT.Move dstX, dstY
     
     ' Check the screen boundaries and stop motion for the Craft
-    If Rect.Left < 0 Then
-        Rect.Left = 0
+    If RECT.Left < 0 Then
+        RECT.Left = 0
     End If
     
-    If Rect.Left > GameEvent.getEngine().getBoundary().Width() - Width Then
-        Rect.Left = GameEvent.getEngine().getBoundary().Width() - Width
+    If RECT.Left > GameEvent.getEngine().getBoundary().Width() - Width Then
+        RECT.Left = GameEvent.getEngine().getBoundary().Width() - Width
     End If
     
-    If Rect.Top < 0 Then
-        Rect.Top = 0
+    If RECT.Top < 0 Then
+        RECT.Top = 0
     End If
     
-    If Rect.Top > GameEvent.getEngine().getBoundary().Height() - Height Then
-        Rect.Top = GameEvent.getEngine().getBoundary().Height() - Height
+    If RECT.Top > GameEvent.getEngine().getBoundary().Height() - Height Then
+        RECT.Top = GameEvent.getEngine().getBoundary().Height() - Height
     End If
     
     ' Set the frame of the action as the current frame to draw
     CurrentFrame = Actions(CurrentAction).NextFrame
-    Frames(CurrentFrame).CollisionRect.Align Rect
+    Frames(CurrentFrame).CollisionRect.Align RECT
     
     BulletHandling Time, Delta
 End Sub
@@ -202,7 +202,7 @@ Private Sub RemoveBullets(ByVal Width As Long)
     Dim index As Integer: index = 1
     Dim Bullet As Sprite
     For Each Bullet In Bullets
-        If Bullet.Rect.Left > Width Or Bullet.ShouldRecycle = True Then
+        If Bullet.RECT.Left > Width Or Bullet.ShouldRecycle = True Then
             Bullets.Remove index
         End If
         index = index + 1
@@ -225,7 +225,7 @@ Public Property Get Sprite_Rect() As Rectangle
     If Alive = True Then
         Set Sprite_Rect = Frames(CurrentFrame).CollisionRect
     Else
-        Set Sprite_Rect = Explosion.Rect
+        Set Sprite_Rect = Explosion.RECT
     End If
 End Property
 
@@ -236,7 +236,7 @@ End Sub
 Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
     If Alive = True Then
         'Render.DrawCircle 150, 150, 30, vbRed
-        Render.Draw Registry, FrameRect(), Rect
+        Render.Draw Registry, FrameRect(), RECT
     Else
         Explosion.Draw Render
     End If
@@ -252,7 +252,7 @@ Public Sub Sprite_Destroy()
         Exit Sub
     End If
     Alive = False
-    Explosion.Rect.Align Rect
+    Explosion.RECT.Align RECT
     Explosion.Init
 End Sub
 
@@ -273,16 +273,16 @@ Private Sub Shoot(ByVal Time As Long, Delta As Double)
     Dim tmp As Sprite
     Set tmp = New CraftBullet
     Bullets.add tmp
-    tmp.Rect.Init Rect.Left + 22, Rect.Top + 12, tmp.Rect.Width, tmp.Rect.Height
+    tmp.RECT.Init RECT.Left + 22, RECT.Top + 12, tmp.RECT.Width, tmp.RECT.Height
 End Sub
 
 Public Sub Sprite_Collide(ByRef Other As Sprite)
-    If Rect.Collide(Other.Rect) And Other.IsAlive Then
+    If RECT.Collide(Other.RECT) And Other.IsAlive Then
         Sprite_Destroy
     End If
     Dim Bullet As Sprite
     For Each Bullet In Bullets
-        If Bullet.Rect.Collide(Other.Rect) And Other.IsAlive Then
+        If Bullet.RECT.Collide(Other.RECT) And Other.IsAlive Then
             Other.Collided Bullet
             Bullet.Collided Other
         End If

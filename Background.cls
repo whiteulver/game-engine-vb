@@ -38,14 +38,32 @@ End Sub
 
 Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
     ScrollX = ScrollX + ScrollStep
-    If ScrollX > pRect.Width Then
-        ScrollX = 0
+    If ScrollX >= Width Then
+        ScrollX = ScrollX Mod Width
     End If
     
-    ViewRectLeft.Init 0, 0, Width - ScrollX, Height
-    ViewRectRight.Init Width - ScrollX, 0, ScrollX, Height
-    SourceRectLeft.Init ScrollX, 0, ViewRectLeft.Width, Height
-    SourceRectRight.Init 0, 0, ViewRectRight.Width, Height
+    ' Compute visible segments against the viewport width (backbuffer width)
+    Dim screenW As Long
+    screenW = GameEvent.getEngine().getBoundary().Width()
+
+    ' Left segment: from ScrollX to end of image, clipped to screen width
+    Dim leftW As Long
+    leftW = Width - ScrollX
+    If leftW > screenW Then leftW = screenW
+    If leftW < 0 Then leftW = 0
+
+    ' Right segment: wraps from start of image to fill the rest of the screen
+    Dim rightW As Long
+    rightW = screenW - leftW
+    If rightW < 0 Then rightW = 0
+
+    ' Destination rects (viewport)
+    ViewRectLeft.Init 0, 0, leftW, Height
+    ViewRectRight.Init leftW, 0, rightW, Height
+
+    ' Source rects from background surface
+    SourceRectLeft.Init ScrollX, 0, leftW, Height
+    SourceRectRight.Init 0, 0, rightW, Height
 End Sub
 
 Public Property Get Sprite_Rect() As Rectangle

@@ -29,11 +29,11 @@ Private Declare Function ShowCursor Lib "user32" (ByVal bShow As Long) As Long
 
 Private Sub Form_GotFocus()
     Set GameEngine = New Engine
-    Set Rendering = New GdiRenderingEngine
+    Set Rendering = New DirectDrawRenderingEngine
     Dim State As GameState
     Set State = New PlayingState
     
-    Rendering.Init frmMain.hDC, Boundary
+    Rendering.Init frmMain.hWnd, Boundary
     GameEngine.Init Rendering, Boundary, State
     
     GameEngine.run

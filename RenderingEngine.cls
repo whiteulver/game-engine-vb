@@ -13,7 +13,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Public Sub Init(hDC As Long, BoundaryIn As Rectangle)
+Public Sub Init(ByRef hWnd As Long, ByRef BoundaryIn As Rectangle)
 End Sub
 
 Public Sub DrawToScreen()
@@ -25,10 +25,10 @@ End Sub
 Public Sub ClearObjects()
 End Sub
 
-Public Sub RegisterSprite(ByVal Name As Integer, ByVal Filepath As String, ByVal MaskFilepath As String)
+Public Sub RegisterSprite(ByVal Name As Integer, ByVal Filepath As String, Optional ByVal MaskFilepath As String = "", Optional ByVal UseColorKey As Boolean = False, Optional ByVal ColorKey As Long = 0)
 End Sub
 
-Public Sub RegisterSpriteFromContext(ByVal Name As Integer, ByVal ImgContext As Long, ByVal MaskContext As Long)
+Public Sub RegisterSpriteFromContext(ByVal Name As Integer, ByVal ImgContext As Long, Optional ByVal MaskContext As Long = 0, Optional ByVal UseColorKey As Boolean = False, Optional ByVal ColorKey As Long = 0)
 End Sub
 
 ' Draw a registered sprite by coping the srcRect of sprite image to the destRect in screen

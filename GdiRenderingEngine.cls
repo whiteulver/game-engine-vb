@@ -14,7 +14,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements RenderingEngine
 
-Private Declare Function GetDC Lib "user32" (ByVal hwnd As Long) As Long
+Private Declare Function GetDC Lib "user32" (ByVal hWnd As Long) As Long
 Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
 Private Declare Function GetPixel Lib "gdi32" (ByVal hDC As Long, ByVal X As Long, ByVal Y As Long) As Long
 Private Declare Function SelectObject Lib "gdi32" (ByVal hDC As Long, ByVal hObject As Long) As Long
@@ -22,7 +22,7 @@ Private Declare Function CreateCompatibleBitmap Lib "gdi32" (ByVal hDC As Long, 
 Private Declare Function CreateCompatibleDC Lib "gdi32" (ByVal hDC As Long) As Long
 Private Declare Function DeleteDC Lib "gdi32" (ByVal hDC As Long) As Long
 Private Declare Function DeleteObject Lib "gdi32" (ByVal hObject As Long) As Long
-Private Declare Function ReleaseDC Lib "user32" (ByVal hwnd As Long, ByVal hDC As Long) As Long
+Private Declare Function ReleaseDC Lib "user32" (ByVal hWnd As Long, ByVal hDC As Long) As Long
 Private Declare Function SetBkColor Lib "gdi32" (ByVal hDC As Long, ByVal crColor As Long) As Long
 Private Declare Function SetBkMode Lib "gdi32" (ByVal hDC As Long, ByVal nBkMode As Long) As Long
 Private Declare Function Rectangle Lib "gdi32" (ByVal hDC As Long, ByVal X1 As Long, ByVal Y1 As Long, ByVal X2 As Long, ByVal Y2 As Long) As Long
@@ -39,6 +39,7 @@ Private Declare Function GetStockObject Lib "gdi32" (ByVal nIndex As Long) As Lo
 Private Const NULL_PEN As Long = 8
 
 Private phDC As Long
+Private phWnd As Long
 Private DeviceContext As Long
 Private BlackBuffer As Long ' Black bitmap to erase contents in screen
 Private Boundary As Rectangle
@@ -47,15 +48,17 @@ Private ContextIndex As Long
 Private RegisteredContexts() As Long
 Private RegisteredMaskContexts() As Long
 
-Public Sub RenderingEngine_Init(ByRef hDC As Long, BoundaryIn As Rectangle)
-    phDC = hDC
+Public Sub RenderingEngine_Init(ByRef hWnd As Long, ByRef BoundaryIn As Rectangle)
+    ' Treat incoming handle as hwnd for engine-agnostic Init
+    phWnd = hWnd
+    phDC = GetDC(hWnd)
     Set Boundary = BoundaryIn
     DeviceContext = CreateContext
     CreateBlackBuffer
  End Sub
 
 Private Function CreateContext(Optional SizeIn As Rectangle) As Long
-    Dim Bitmap As Long
+    Dim BITMAP As Long
     Dim hDC As Long
     Dim BitmaphDC As Long
     Dim Size As Rectangle
@@ -69,10 +72,10 @@ Private Function CreateContext(Optional SizeIn As Rectangle) As Long
     hDC = GetDC(0)
     BitmaphDC = GetDC(0)
     CreateContext = CreateCompatibleDC(hDC)
-    Bitmap = CreateCompatibleBitmap(BitmaphDC, Size.Width(), Size.Height())
-    SelectObject CreateContext, Bitmap
+    BITMAP = CreateCompatibleBitmap(BitmaphDC, Size.Width(), Size.Height())
+    SelectObject CreateContext, BITMAP
     ' Cleanup
-    DeleteObject Bitmap
+    DeleteObject BITMAP
     DeleteDC hDC
     DeleteDC BitmaphDC
 End Function
@@ -127,7 +130,9 @@ Public Sub RenderingEngine_ClearObjects()
     Next
     DeleteDC DeviceContext
     DeleteDC BlackBuffer
-    ReleaseDC 0, phDC
+    If phWnd <> 0 And phDC <> 0 Then
+        ReleaseDC phWnd, phDC
+    End If
 End Sub
 
 Private Sub AddContext(context As Long)
@@ -136,15 +141,23 @@ Private Sub AddContext(context As Long)
     ContextIndex = ContextIndex + 1
 End Sub
 
-Public Sub RenderingEngine_RegisterSprite(ByVal Name As Integer, ByVal Filepath As String, ByVal MaskFilepath As String)
+Public Sub RenderingEngine_RegisterSprite(ByVal Name As Integer, ByVal Filepath As String, Optional ByVal MaskFilepath As String = "", Optional ByVal UseColorKey As Boolean = False, Optional ByVal ColorKey As Long = 0)
     ReDim Preserve RegisteredContexts(Name)
     ReDim Preserve RegisteredMaskContexts(Name)
 
     RegisteredContexts(Name) = RenderingEngine_CreateImageContext(Filepath)
-    RegisteredMaskContexts(Name) = RenderingEngine_CreateImageContext(MaskFilepath)
+    If LenB(MaskFilepath) > 0 Then
+        If StrComp(MaskFilepath, Filepath, vbTextCompare) = 0 Then
+            RegisteredMaskContexts(Name) = 0 ' treat identical file as no mask
+        Else
+            RegisteredMaskContexts(Name) = RenderingEngine_CreateImageContext(MaskFilepath)
+        End If
+    Else
+        RegisteredMaskContexts(Name) = 0
+    End If
 End Sub
 
-Public Sub RenderingEngine_RegisterSpriteFromContext(ByVal Name As Integer, ByVal ImgContext As Long, ByVal MaskContext As Long)
+Public Sub RenderingEngine_RegisterSpriteFromContext(ByVal Name As Integer, ByVal ImgContext As Long, Optional ByVal MaskContext As Long = 0, Optional ByVal UseColorKey As Boolean = False, Optional ByVal ColorKey As Long = 0)
     ReDim Preserve RegisteredContexts(Name)
     ReDim Preserve RegisteredMaskContexts(Name)
 
@@ -159,21 +172,26 @@ Public Sub RenderingEngine_Draw(Name As Integer, srcRect As Rectangle, destRect 
     mask = RegisteredMaskContexts(Name)
     img = RegisteredContexts(Name)
     
-    BitBlt DeviceContext, destRect.Left, destRect.Top, srcRect.Width, srcRect.Height, mask, srcRect.Left, srcRect.Top, vbSrcAnd
-    BitBlt DeviceContext, destRect.Left, destRect.Top, srcRect.Width, srcRect.Height, img, srcRect.Left, srcRect.Top, vbSrcPaint
+    If mask <> 0 Then
+        BitBlt DeviceContext, destRect.Left, destRect.Top, srcRect.Width, srcRect.Height, mask, srcRect.Left, srcRect.Top, vbSrcAnd
+        BitBlt DeviceContext, destRect.Left, destRect.Top, srcRect.Width, srcRect.Height, img, srcRect.Left, srcRect.Top, vbSrcPaint
+    Else
+        ' No mask provided: regular copy
+        BitBlt DeviceContext, destRect.Left, destRect.Top, srcRect.Width, srcRect.Height, img, srcRect.Left, srcRect.Top, vbSrcCopy
+    End If
 End Sub
 Public Sub RenderingEngine_DrawCircle(X As Long, Y As Long, Radius As Long, Color As Long)
-    Dim Pen As Long
+    Dim pen As Long
     Dim brush As Long
     Dim oldPen As Long
     Dim oldBrush As Long
 
     ' Create outline and fill
-    Pen = CreatePen(0, 1, Color)
+    pen = CreatePen(0, 1, Color)
     brush = CreateSolidBrush(Color)
 
     ' Select them into the DC, keeping the old ones
-    oldPen = SelectObject(DeviceContext, Pen)
+    oldPen = SelectObject(DeviceContext, pen)
     oldBrush = SelectObject(DeviceContext, brush)
 
     ' Draw circle centered at (X,Y)
@@ -184,7 +202,7 @@ Public Sub RenderingEngine_DrawCircle(X As Long, Y As Long, Radius As Long, Colo
     SelectObject DeviceContext, oldBrush
 
     ' Delete ours to avoid leaks
-    DeleteObject Pen
+    DeleteObject pen
     DeleteObject brush
 End Sub
 

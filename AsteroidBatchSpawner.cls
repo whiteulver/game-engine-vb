@@ -26,8 +26,7 @@ Private Sub Class_Initialize()
     MaxAsteroids = 100 ' Maximum asteroids in memory
     SpawnInterval = 1000
     BatchSize = 4 ' Number of asteroids per batch
-    ScreenWidth = 320 ' Adjust based on your screen size
-    ScreenHeight = 256 ' Adjust based on your screen size
+
     LastSpawnTime = 0
     ReDim Asteroids(MaxAsteroids - 1)
 End Sub
@@ -50,7 +49,7 @@ Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
         If Not Asteroids(i) Is Nothing Then
             Asteroids(i).Update Time, Delta
             ' Check if Asteroid is off-screen or should recycle
-            If (Asteroids(i).Rect.Left + Asteroids(i).Rect.Width < 0) _
+            If (Asteroids(i).RECT.Left + Asteroids(i).RECT.Width < 0) _
                 Or Asteroids(i).ShouldRecycle() Then
                 Set Asteroids(i) = Nothing
             End If
@@ -75,6 +74,8 @@ Public Property Get Sprite_Rect() As Rectangle
 End Property
 
 Public Sub Sprite_Listen(ByRef GameEventIn As DomainEvent)
+    ScreenWidth = GameEventIn.getEngine().getBoundary().Width()
+    ScreenHeight = GameEventIn.getEngine().getBoundary().Height()
     ' Pass events to all active asteroids
     Dim i As Integer
     For i = 0 To MaxAsteroids - 1
@@ -139,8 +140,8 @@ Private Sub SpawnBatch(ByVal Time As Long)
 
             Dim hAsteroid As Sprite
             Set hAsteroid = New Asteroid
-            hAsteroid.Rect.Left = ScreenWidth + 10
-            hAsteroid.Rect.Top = randomY
+            hAsteroid.RECT.Left = ScreenWidth + 50
+            hAsteroid.RECT.Top = randomY
             Set Asteroids(i) = hAsteroid
 
             spawned = spawned + 1
@@ -155,7 +156,7 @@ Public Function GetActiveAsteroids() As Collection
     For i = 0 To MaxAsteroids - 1
         If Not Asteroids(i) Is Nothing Then
             If Asteroids(i).IsAlive Then
-                GetActiveAsteroids.Add Asteroids(i)
+                GetActiveAsteroids.add Asteroids(i)
             End If
         End If
     Next i
@@ -167,7 +168,7 @@ Private Function OverlapsExisting(ByRef candidate As Sprite, ByRef placed As Col
     For i = 0 To MaxAsteroids - 1
         If Not Asteroids(i) Is Nothing Then
             If Asteroids(i).IsAlive Then
-                If candidate.Rect.Collide(Asteroids(i).Rect) Then
+                If candidate.RECT.Collide(Asteroids(i).RECT) Then
                     OverlapsExisting = True
                     Exit Function
                 End If
@@ -178,7 +179,7 @@ Private Function OverlapsExisting(ByRef candidate As Sprite, ByRef placed As Col
     If Not placed Is Nothing Then
         Dim a As Sprite
         For Each a In placed
-            If candidate.Rect.Collide(a.Rect) Then
+            If candidate.RECT.Collide(a.RECT) Then
                 OverlapsExisting = True
                 Exit Function
             End If
