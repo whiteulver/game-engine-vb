@@ -27,9 +27,16 @@ End Sub
 
 Public Sub RegisterSprite(ByVal Name As Integer, ByVal Filepath As String, ByVal MaskFilepath As String)
 End Sub
+
+Public Sub RegisterSpriteFromContext(ByVal Name As Integer, ByVal ImgContext As Long, ByVal MaskContext As Long)
+End Sub
+
 ' Draw a registered sprite by coping the srcRect of sprite image to the destRect in screen
 Public Sub Draw(Name As Integer, srcRect As Rectangle, destRect As Rectangle)
 End Sub
 
 Public Sub DrawCircle(X As Long, Y As Long, Radius As Long, Color As Long)
+End Sub
+
+Public Sub BuildParticleAtlas(ByVal Name As Integer)
 End Sub

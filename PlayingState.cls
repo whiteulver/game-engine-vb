@@ -43,6 +43,8 @@ Public Sub GameState_Init(ByRef RenderIn As RenderingEngine)
     
     ' Register bullet image
     Render.RegisterSprite 4, App.Path & "\resources\ProjectX_SE_sprites2.bmp", App.Path & "\resources\ProjectX_SE_sprites2_mask.bmp"
+
+    Render.BuildParticleAtlas 5
 End Sub
 
 Public Function GameState_State() As GameState

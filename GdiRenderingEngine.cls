@@ -34,6 +34,9 @@ Private Declare Function CreateSolidBrush Lib "gdi32" (ByVal crColor As Long) As
 Private Declare Function StretchBlt Lib "gdi32" (ByVal hDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal nSrcWidth As Long, ByVal nSrcHeight As Long, ByVal dwRop As Long) As Long
 Private Declare Function CreatePen Lib "gdi32" (ByVal nPenStyle As Long, ByVal nWidth As Long, ByVal crColor As Long) As Long
 Private Declare Function Ellipse Lib "gdi32" (ByVal hDC As Long, ByVal X1 As Long, ByVal Y1 As Long, ByVal X2 As Long, ByVal Y2 As Long) As Long
+Private Declare Function GetStockObject Lib "gdi32" (ByVal nIndex As Long) As Long
+
+Private Const NULL_PEN As Long = 8
 
 Private phDC As Long
 Private DeviceContext As Long
@@ -92,7 +95,7 @@ End Sub
 Private Sub CreateBlackBuffer()
     Dim Region As Long
     Dim tmpContext As Long
-    Dim Brush As Long
+    Dim brush As Long
     
     tmpContext = CreateContext
     
@@ -104,10 +107,10 @@ Private Sub CreateBlackBuffer()
     EndPath tmpContext
     Region = PathToRegion(tmpContext)
     
-    Brush = CreateSolidBrush(RGB(0, 0, 0))
-    SelectObject tmpContext, Brush
-    FillRgn tmpContext, Region, Brush
-    DeleteObject Brush
+    brush = CreateSolidBrush(RGB(0, 0, 0))
+    SelectObject tmpContext, brush
+    FillRgn tmpContext, Region, brush
+    DeleteObject brush
     DeleteObject Region
 
     BlackBuffer = tmpContext
@@ -141,6 +144,14 @@ Public Sub RenderingEngine_RegisterSprite(ByVal Name As Integer, ByVal Filepath 
     RegisteredMaskContexts(Name) = RenderingEngine_CreateImageContext(MaskFilepath)
 End Sub
 
+Public Sub RenderingEngine_RegisterSpriteFromContext(ByVal Name As Integer, ByVal ImgContext As Long, ByVal MaskContext As Long)
+    ReDim Preserve RegisteredContexts(Name)
+    ReDim Preserve RegisteredMaskContexts(Name)
+
+    RegisteredContexts(Name) = ImgContext
+    RegisteredMaskContexts(Name) = MaskContext
+End Sub
+
 Public Sub RenderingEngine_Draw(Name As Integer, srcRect As Rectangle, destRect As Rectangle)
     Dim mask As Long
     Dim img As Long
@@ -153,17 +164,17 @@ Public Sub RenderingEngine_Draw(Name As Integer, srcRect As Rectangle, destRect 
 End Sub
 Public Sub RenderingEngine_DrawCircle(X As Long, Y As Long, Radius As Long, Color As Long)
     Dim Pen As Long
-    Dim Brush As Long
+    Dim brush As Long
     Dim oldPen As Long
     Dim oldBrush As Long
 
     ' Create outline and fill
     Pen = CreatePen(0, 1, Color)
-    Brush = CreateSolidBrush(Color)
+    brush = CreateSolidBrush(Color)
 
     ' Select them into the DC, keeping the old ones
     oldPen = SelectObject(DeviceContext, Pen)
-    oldBrush = SelectObject(DeviceContext, Brush)
+    oldBrush = SelectObject(DeviceContext, brush)
 
     ' Draw circle centered at (X,Y)
     Ellipse DeviceContext, X - Radius, Y - Radius, X + Radius, Y + Radius
@@ -174,5 +185,127 @@ Public Sub RenderingEngine_DrawCircle(X As Long, Y As Long, Radius As Long, Colo
 
     ' Delete ours to avoid leaks
     DeleteObject Pen
-    DeleteObject Brush
+    DeleteObject brush
 End Sub
+
+Public Sub RenderingEngine_BuildParticleAtlas(ByVal Name As Integer)
+    Dim atlasImgDC As Long, atlasMaskDC As Long
+    Dim atlasImgBitmap As Long, atlasMaskBitmap As Long
+    Dim hDC As Long
+    Dim i As Long, j As Long
+    Dim Radius As Long
+    Dim tileX As Long, tileY As Long
+    Dim centerX As Long, centerY As Long
+    Dim Color As Long
+    Dim brush As Long, oldBrush As Long
+    
+    ' Create atlas DCs (256x192 pixels)
+    hDC = GetDC(0)
+    atlasImgDC = CreateCompatibleDC(hDC)
+    atlasMaskDC = CreateCompatibleDC(hDC)
+    
+    ' Create bitmaps for the atlas
+    atlasImgBitmap = CreateCompatibleBitmap(hDC, 256, 192)
+    atlasMaskBitmap = CreateCompatibleBitmap(hDC, 256, 192)
+    
+    ' Select bitmaps into DCs
+    SelectObject atlasImgDC, atlasImgBitmap
+    SelectObject atlasMaskDC, atlasMaskBitmap
+    
+    ' Clear img to black, mask to white
+    SetBkColor atlasImgDC, RGB(0, 0, 0)
+    SetBkColor atlasMaskDC, RGB(255, 255, 255)
+    SetBkMode atlasImgDC, 1
+    SetBkMode atlasMaskDC, 1
+    
+    ' Fill with black background (no border)
+    Dim bgOldPen As Long
+    brush = CreateSolidBrush(RGB(0, 0, 0))
+    oldBrush = SelectObject(atlasImgDC, brush)
+    bgOldPen = SelectObject(atlasImgDC, GetStockObject(NULL_PEN))
+    Rectangle atlasImgDC, 0, 0, 256, 192
+    SelectObject atlasImgDC, bgOldPen
+    SelectObject atlasImgDC, oldBrush
+    DeleteObject brush
+    
+    brush = CreateSolidBrush(RGB(255, 255, 255))
+    oldBrush = SelectObject(atlasMaskDC, brush)
+    bgOldPen = SelectObject(atlasMaskDC, GetStockObject(NULL_PEN))
+    Rectangle atlasMaskDC, 0, 0, 256, 192
+    SelectObject atlasMaskDC, bgOldPen
+    SelectObject atlasMaskDC, oldBrush
+    DeleteObject brush
+    
+    ' Create circles for each radius and color combination
+    Dim nullPen As Long
+    Dim oldPen As Long
+    nullPen = GetStockObject(NULL_PEN)
+    For i = 0 To 5 ' 6 rows (radii: 2, 4, 6, 8, 12, 16)
+        Radius = Choose(i + 1, 2, 4, 6, 8, 12, 16)
+        tileY = i * 32
+        
+        For j = 0 To 7 ' 8 columns (color steps)
+            tileX = j * 32
+            centerX = tileX + 16 ' Center of 32x32 tile
+            centerY = tileY + 16
+            
+            ' Calculate color based on orange->white fade
+            Color = CalculateParticleColor(j)
+            
+            ' Draw filled circle in image atlas (pad by 2px to avoid touching tile edges)
+            Dim drawR As Long
+            drawR = Radius - 2
+            If drawR < 1 Then drawR = 1
+            brush = CreateSolidBrush(Color)
+            oldBrush = SelectObject(atlasImgDC, brush)
+            oldPen = SelectObject(atlasImgDC, nullPen)
+            Ellipse atlasImgDC, centerX - drawR, centerY - drawR, centerX + drawR, centerY + drawR
+            SelectObject atlasImgDC, oldPen
+            SelectObject atlasImgDC, oldBrush
+            DeleteObject brush
+            
+            ' Draw black circle in mask atlas
+            brush = CreateSolidBrush(RGB(0, 0, 0))
+            oldBrush = SelectObject(atlasMaskDC, brush)
+            oldPen = SelectObject(atlasMaskDC, nullPen)
+            Ellipse atlasMaskDC, centerX - drawR, centerY - drawR, centerX + drawR, centerY + drawR
+            SelectObject atlasMaskDC, oldPen
+            SelectObject atlasMaskDC, oldBrush
+            DeleteObject brush
+        Next j
+    Next i
+    
+    ' Register the atlas contexts
+    RenderingEngine_RegisterSpriteFromContext Name, atlasImgDC, atlasMaskDC
+    
+    ' Add contexts to cleanup list
+    AddContext atlasImgDC
+    AddContext atlasMaskDC
+    
+    ' Debug: Verify atlas was created successfully
+    Debug.Print "Particle Atlas created successfully for registry " & Name
+    
+    ' Cleanup
+    DeleteObject atlasImgBitmap
+    DeleteObject atlasMaskBitmap
+    DeleteDC hDC
+End Sub
+
+Private Function CalculateParticleColor(ByVal step As Long) As Long
+    Dim baseR As Long, baseG As Long, baseB As Long
+    Dim r As Long, g As Long, b As Long
+    Dim p As Single
+    
+    ' Base orange color
+    baseR = 255: baseG = 160: baseB = 0
+    
+    ' Fade parameter (0 to 1)
+    p = step / 7!
+    
+    ' Interpolate to white
+    r = baseR + CLng((255 - baseR) * p)
+    g = baseG + CLng((255 - baseG) * p)
+    b = baseB + CLng((255 - baseB) * p)
+    
+    CalculateParticleColor = RGB(r, g, b)
+End Function

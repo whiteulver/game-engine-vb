@@ -13,6 +13,9 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+Private Const PARTICLE_ATLAS_REGISTRY As Integer = 5
+Private Const TILE_SIZE As Long = 32
+
 Private Type Particle
     X As Single
     Y As Single
@@ -23,6 +26,8 @@ Private Type Particle
     Life As Single
     Color As Long
     BaseColor As Long
+    Row As Long
+    Col As Long
 End Type
 Private Particles() As Particle
 Private pAlive As Boolean
@@ -101,22 +106,14 @@ Public Sub Update(ByVal Time As Long, Delta As Double)
                 ' grow radius steadily
                 .Radius = .Radius + pRadiusGrow '0.4
                 
-                ' fade color to white over time
+                ' advance life and compute atlas indices
                 .Life = .Life - 1
                 Dim p As Single
-                p = 1! - (.Life / 40!)
+                p = (.Radius - 0.02) / 8!
                 If p < 0! Then p = 0!
                 If p > 1! Then p = 1!
-                
-                Dim r0 As Long, g0 As Long, b0 As Long
-                Dim r As Long, g As Long, b As Long
-                r0 = (.BaseColor And &HFF&)
-                g0 = ((.BaseColor \ &H100&) And &HFF&)
-                b0 = ((.BaseColor \ &H10000) And &HFF&)
-                r = r0 + CLng((255 - r0) * p)
-                g = g0 + CLng((255 - g0) * p)
-                b = b0 + CLng((255 - b0) * p)
-                .Color = RGB(r, g, b)
+                .Col = CLng(p * 7!)
+                .Row = MapRadiusToRow(.Radius)
                 
                 active = True
             End If
@@ -128,15 +125,53 @@ End Sub
 
 Public Sub Draw(ByRef Render As RenderingEngine)
     Dim i As Long
+    Dim srcRect As Rectangle
+    Dim destRect As Rectangle
+    Dim sx As Long, sy As Long, sw As Long, sh As Long
+
     For i = 0 To pParticleCount - 1
         With Particles(i)
             If .Life > 0 Then
-                Render.DrawCircle _
-                    CLng(.X), CLng(.Y), CLng(.Radius), .Color
+                ' Use full 32x32 tile
+                sx = .Col * TILE_SIZE
+                sy = .Row * TILE_SIZE
+                sw = TILE_SIZE
+                sh = TILE_SIZE
+                Set srcRect = New Rectangle
+                srcRect.Init sx, sy, sw, sh
+
+                Set destRect = New Rectangle
+                destRect.Init CLng(.X) - (sw \ 2), CLng(.Y) - (sh \ 2), sw, sh
+
+                Render.Draw PARTICLE_ATLAS_REGISTRY, srcRect, destRect
             End If
         End With
     Next
 End Sub
+
+Private Function MapRadiusToRow(ByVal r As Single) As Long
+    If r < 3! Then
+        MapRadiusToRow = 0
+        Exit Function
+    End If
+    If r < 5! Then
+        MapRadiusToRow = 1
+        Exit Function
+    End If
+    If r < 7! Then
+        MapRadiusToRow = 2
+        Exit Function
+    End If
+    If r < 10! Then
+        MapRadiusToRow = 3
+        Exit Function
+    End If
+    If r < 14! Then
+        MapRadiusToRow = 4
+        Exit Function
+    End If
+    MapRadiusToRow = 5
+End Function
 
 Public Sub Destroy()
     Erase Particles
