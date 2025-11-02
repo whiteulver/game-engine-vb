@@ -22,7 +22,7 @@ End Sub
 Public Sub Draw(ByRef Render As RenderingEngine)
 End Sub
 ' Returns a Rectangle that represents the sprite position in screen
-Public Property Get Rect() As Rectangle
+Public Property Get Rectangle() As Rectangle
 End Property
 
 Public Sub Listen(ByRef GameEventIn As DomainEvent)

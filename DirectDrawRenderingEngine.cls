@@ -95,58 +95,58 @@ End Sub
 
 ' Clip a blit so it stays within the backbuffer bounds. Returns False if fully off-screen
 Private Function ClipToBackbuffer(ByRef srcIn As RECT, ByVal destXIn As Long, ByVal destYIn As Long, ByVal backW As Long, ByVal backH As Long, ByRef srcOut As RECT, ByRef destXOut As Long, ByRef destYOut As Long) As Boolean
-    Dim width As Long, height As Long
+    Dim Width As Long, Height As Long
     Dim destX As Long, destY As Long
     Dim src As RECT
-    Dim dx As Long, dy As Long
+    Dim dstX As Long, dstY As Long
     Dim overW As Long, overH As Long
 
     src = srcIn
     destX = destXIn
     destY = destYIn
 
-    width = src.Right - src.Left
-    height = src.Bottom - src.Top
+    Width = src.Right - src.Left
+    Height = src.Bottom - src.Top
 
     ' Clip left
     If destX < 0 Then
-        dx = -destX
-        If dx >= width Then ClipToBackbuffer = False: Exit Function
-        src.Left = src.Left + dx
+        dstX = -destX
+        If dstX >= Width Then ClipToBackbuffer = False: Exit Function
+        src.Left = src.Left + dstX
         destX = 0
-        width = width - dx
+        Width = Width - dstX
     End If
 
     ' Clip top
     If destY < 0 Then
-        dy = -destY
-        If dy >= height Then ClipToBackbuffer = False: Exit Function
-        src.Top = src.Top + dy
+        dstY = -destY
+        If dstY >= Height Then ClipToBackbuffer = False: Exit Function
+        src.Top = src.Top + dstY
         destY = 0
-        height = height - dy
+        Height = Height - dstY
     End If
 
     ' Clip right
-    If destX + width > backW Then
-        overW = destX + width - backW
-        If overW >= width Then ClipToBackbuffer = False: Exit Function
-        width = width - overW
+    If destX + Width > backW Then
+        overW = destX + Width - backW
+        If overW >= Width Then ClipToBackbuffer = False: Exit Function
+        Width = Width - overW
     End If
-    src.Right = src.Left + width
+    src.Right = src.Left + Width
 
     ' Clip bottom
-    If destY + height > backH Then
-        overH = destY + height - backH
-        If overH >= height Then ClipToBackbuffer = False: Exit Function
-        height = height - overH
+    If destY + Height > backH Then
+        overH = destY + Height - backH
+        If overH >= Height Then ClipToBackbuffer = False: Exit Function
+        Height = Height - overH
     End If
-    src.Bottom = src.Top + height
+    src.Bottom = src.Top + Height
 
     ' Output
     srcOut = src
     destXOut = destX
     destYOut = destY
-    ClipToBackbuffer = (width > 0 And height > 0)
+    ClipToBackbuffer = (Width > 0 And Height > 0)
 End Function
 
 Public Sub RenderingEngine_Init(ByRef hWnd As Long, ByRef BoundaryIn As Rectangle)
@@ -286,20 +286,20 @@ Public Sub RenderingEngine_RegisterSpriteFromContext(ByVal Name As Integer, ByVa
     If Name > UBound(RegisteredSurfaces) Then
         ReDim Preserve RegisteredSurfaces(Name)
         ReDim Preserve RegisteredMaskSurfaces(Name)
+        ReDim Preserve UseColorKeyFlag(Name)
     End If
     
     ' Create surfaces from GDI contexts
     Set RegisteredSurfaces(Name) = CreateSurfaceFromContext(ImgContext)
     ' Mask ignored in DirectDraw path
     
+    UseColorKeyFlag(Name) = UseColorKey
     ' Apply color key if requested
     If UseColorKey And Not RegisteredSurfaces(Name) Is Nothing Then
         Dim ddck2 As DDCOLORKEY
         ddck2.low = ColorKey
         ddck2.high = ColorKey
         RegisteredSurfaces(Name).SetColorKey DDCKEY_SRCBLT, ddck2
-        If Name > UBound(UseColorKeyFlag) Then ReDim Preserve UseColorKeyFlag(Name)
-        UseColorKeyFlag(Name) = True
     End If
 End Sub
 
@@ -368,8 +368,8 @@ Public Sub RenderingEngine_Draw(Name As Integer, srcRect As Rectangle, destRect 
     Dim srcR As RECT
     Dim destR As RECT
     Dim clippedSrc As RECT
-    Dim dx As Long
-    Dim dy As Long
+    Dim dstX As Long
+    Dim dstY As Long
     
     ' Get surface
     Set imgSurface = RegisteredSurfaces(Name)
@@ -380,15 +380,13 @@ Public Sub RenderingEngine_Draw(Name As Integer, srcRect As Rectangle, destRect 
     
     ' Use helper to clip to backbuffer; skip if fully outside
     If imgSurface Is Nothing Then Exit Sub
-    If Not ClipToBackbuffer(srcR, destR.Left, destR.Top, Boundary.Width, Boundary.Height, clippedSrc, dx, dy) Then Exit Sub
+    If Not ClipToBackbuffer(srcR, destR.Left, destR.Top, Boundary.Width, Boundary.Height, clippedSrc, dstX, dstY) Then Exit Sub
 
     ' Color-keyed or regular blit depending on registration
     Dim flags As Long
     flags = DDBLTFAST_WAIT
-    If Name <= UBound(UseColorKeyFlag) Then
-        If UseColorKeyFlag(Name) Then flags = flags Or DDBLTFAST_SRCCOLORKEY
-    End If
-    BackSurface.BltFast dx, dy, imgSurface, clippedSrc, flags
+    If UseColorKeyFlag(Name) Then flags = flags Or DDBLTFAST_SRCCOLORKEY
+    BackSurface.BltFast dstX, dstY, imgSurface, clippedSrc, flags
 End Sub
 
 Public Sub RenderingEngine_DrawCircle(X As Long, Y As Long, Radius As Long, Color As Long)
@@ -514,10 +512,12 @@ Public Sub RenderingEngine_BuildParticleAtlas(ByVal Name As Integer)
     If Name > UBound(RegisteredSurfaces) Then
         ReDim Preserve RegisteredSurfaces(Name)
         ReDim Preserve RegisteredMaskSurfaces(Name)
+        ReDim Preserve UseColorKeyFlag(Name)
     End If
     Set RegisteredSurfaces(Name) = atlasImgSurface
     Set RegisteredMaskSurfaces(Name) = atlasMaskSurface
-    
+    UseColorKeyFlag(Name) = True
+
     Debug.Print "Particle Atlas created successfully for registry " & Name
 End Sub
 

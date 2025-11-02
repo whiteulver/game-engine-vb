@@ -38,8 +38,8 @@ Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
     pParticleLogic.Draw Render
 End Sub
 
-Public Property Get Sprite_Rect() As Rectangle
-    Set Sprite_Rect = Bounds
+Public Property Get Sprite_Rectangle() As Rectangle
+    Set Sprite_Rectangle = Bounds
 End Property
 
 Public Sub Sprite_Listen(ByRef GameEventIn As DomainEvent)

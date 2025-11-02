@@ -49,7 +49,7 @@ Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
         If Not Asteroids(i) Is Nothing Then
             Asteroids(i).Update Time, Delta
             ' Check if Asteroid is off-screen or should recycle
-            If (Asteroids(i).RECT.Left + Asteroids(i).RECT.Width < 0) _
+            If (Asteroids(i).Rectangle.Left + Asteroids(i).Rectangle.Width < 0) _
                 Or Asteroids(i).ShouldRecycle() Then
                 Set Asteroids(i) = Nothing
             End If
@@ -67,10 +67,10 @@ Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
     Next i
 End Sub
 
-Public Property Get Sprite_Rect() As Rectangle
+Public Property Get Sprite_Rectangle() As Rectangle
     ' Return a dummy rectangle since this is a manager
-    Set Sprite_Rect = New Rectangle
-    Sprite_Rect.Init 0, 0, 0, 0
+    Set Sprite_Rectangle = New Rectangle
+    Sprite_Rectangle.Init 0, 0, 0, 0
 End Property
 
 Public Sub Sprite_Listen(ByRef GameEventIn As DomainEvent)
@@ -105,10 +105,11 @@ End Property
 
 Public Sub Sprite_Collide(ByRef Other As Sprite)
     ' Check collisions with all active asteroids
+    ' Let the Other sprite check collision with each asteroid
     Dim i As Integer
     For i = 0 To MaxAsteroids - 1
         If Not Asteroids(i) Is Nothing Then
-            If Asteroids(i).IsAlive Then Asteroids(i).Collide Other
+            If Asteroids(i).IsAlive Then Other.Collide Asteroids(i)
         End If
     Next i
 End Sub
@@ -140,8 +141,8 @@ Private Sub SpawnBatch(ByVal Time As Long)
 
             Dim hAsteroid As Sprite
             Set hAsteroid = New Asteroid
-            hAsteroid.RECT.Left = ScreenWidth + 50
-            hAsteroid.RECT.Top = randomY
+            hAsteroid.Rectangle.Left = ScreenWidth + 50
+            hAsteroid.Rectangle.Top = randomY
             Set Asteroids(i) = hAsteroid
 
             spawned = spawned + 1
@@ -168,7 +169,7 @@ Private Function OverlapsExisting(ByRef candidate As Sprite, ByRef placed As Col
     For i = 0 To MaxAsteroids - 1
         If Not Asteroids(i) Is Nothing Then
             If Asteroids(i).IsAlive Then
-                If candidate.RECT.Collide(Asteroids(i).RECT) Then
+                If candidate.Rectangle.Collide(Asteroids(i).Rectangle) Then
                     OverlapsExisting = True
                     Exit Function
                 End If
@@ -179,7 +180,7 @@ Private Function OverlapsExisting(ByRef candidate As Sprite, ByRef placed As Col
     If Not placed Is Nothing Then
         Dim a As Sprite
         For Each a In placed
-            If candidate.RECT.Collide(a.RECT) Then
+            If candidate.Rectangle.Collide(a.Rectangle) Then
                 OverlapsExisting = True
                 Exit Function
             End If

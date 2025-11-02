@@ -97,8 +97,8 @@ Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
     Render.Draw Registry, ExplodeFrames(CurrentFrame).DrawRect, pRect
 End Sub
 
-Public Property Get Sprite_Rect() As Rectangle
-    Set Sprite_Rect = pRect
+Public Property Get Sprite_Rectangle() As Rectangle
+    Set Sprite_Rectangle = pRect
 End Property
 
 Public Sub Sprite_Listen(ByRef GameEventIn As DomainEvent)

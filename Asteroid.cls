@@ -16,7 +16,7 @@ Implements Sprite
 
 Private Speed As Integer
 Private RECT As Rectangle ' The rectal that defines the position of sprite in screen.
-Private srcRECT As Rectangle ' The rectangle from Asteroid sprite in image file.
+Private srcRect As Rectangle ' The rectangle from Asteroid sprite in image file.
 Private Type AsteroidType
     srcX As Long
     srcY As Long
@@ -53,8 +53,8 @@ Private Sub Class_Initialize()
 
     Set RECT = New Rectangle
     RECT.Init 320, 50, Variants(Skin).Width, Variants(Skin).Height
-    Set srcRECT = New Rectangle
-    srcRECT.Init Variants(Skin).srcX, Variants(Skin).srcY, Variants(Skin).Width, Variants(Skin).Height
+    Set srcRect = New Rectangle
+    srcRect.Init Variants(Skin).srcX, Variants(Skin).srcY, Variants(Skin).Width, Variants(Skin).Height
 End Sub
 
 Public Sub Sprite_Init()
@@ -70,14 +70,14 @@ End Sub
 
 Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
     If Alive = True Then
-        Render.Draw 2, srcRECT, RECT
+        Render.Draw 2, srcRect, RECT
     Else
         Explosion.Draw Render
     End If
 End Sub
 
-Public Property Get Sprite_Rect() As Rectangle
-    Set Sprite_Rect = RECT
+Public Property Get Sprite_Rectangle() As Rectangle
+    Set Sprite_Rectangle = RECT
 End Property
 
 Public Sub Sprite_Listen(ByRef GameEventIn As DomainEvent)
@@ -89,7 +89,7 @@ Public Sub Sprite_Destroy()
     End If
     Alive = False
     Set Explosion = New Explosion
-    Explosion.RECT.Align RECT
+    Explosion.Rectangle.Align RECT
     Explosion.Init
 End Sub
 

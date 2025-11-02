@@ -14,7 +14,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private IsRunning As Boolean
-Private Const MsDelay As Long = 14
+Private Const MsDelay As Long = 15
 Private Rendering As RenderingEngine
 Private Keyboard As KeyboardInput
 Private DeviceContextHandler As Long

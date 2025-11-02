@@ -16,8 +16,8 @@ Implements Sprite
 
 Private Alive As Boolean
 Private Const Speed = 4
-Private RECT As Rectangle ' The rectal that defines the position of sprite in screen.
-Private srcRECT As Rectangle ' The rectangle from bullet sprite in image file.
+Private RECT As Rectangle ' The rectangle that defines the position of sprite in screen.
+Private srcRect As Rectangle ' The rectangle from bullet sprite in image file.
 Private GameEvent As DomainEvent
 Private pShouldRecycle As Boolean
 Private Explosion As Sprite
@@ -27,9 +27,9 @@ Private Sub Class_Initialize()
     pShouldRecycle = False
     Alive = True
     Set RECT = New Rectangle
-    Set srcRECT = New Rectangle
+    Set srcRect = New Rectangle
     RECT.Init 0, 0, 11, 6
-    srcRECT.Init 0, 5, 11, 6
+    srcRect.Init 0, 5, 11, 6
 End Sub
 
 Public Sub Sprite_Init()
@@ -45,14 +45,14 @@ End Sub
 
 Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
     If Alive = True Then
-        Render.Draw Sprite_Registry, srcRECT, RECT
+        Render.Draw Sprite_Registry, srcRect, RECT
     Else
         Explosion.Draw Render
     End If
 End Sub
 
-Public Property Get Sprite_Rect() As Rectangle
-    Set Sprite_Rect = RECT
+Public Property Get Sprite_Rectangle() As Rectangle
+    Set Sprite_Rectangle = RECT
 End Property
 
 Public Sub Sprite_Listen(ByRef GameEventIn As DomainEvent)
@@ -64,7 +64,7 @@ Public Sub Sprite_Destroy()
         Exit Sub
     End If
     Alive = False
-    Explosion.RECT.Align RECT
+    Explosion.Rectangle.Align RECT
     Explosion.Init
 End Sub
 

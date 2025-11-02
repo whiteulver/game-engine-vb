@@ -65,8 +65,8 @@ Public Sub GameState_Update(Time As Long, Delta As Double)
     cftSprite.Update Time, Delta
     asteroidSpawner.Listen GameEvent
     asteroidSpawner.Update Time, Delta
-    ' Check collision of Craft and Asteroids
-    CheckCollideWithAsteroids cftSprite, asteroidSpawner
+    ' Check collision of Craft and Asteroids (encapsulated in AsteroidBatchSpawner)
+    asteroidSpawner.Collide cftSprite
 End Sub
 
 Public Sub GameState_Draw()
@@ -76,27 +76,4 @@ Public Sub GameState_Draw()
 End Sub
 Public Sub GameState_Listen(GameEventIn As DomainEvent)
     Set GameEvent = GameEventIn
-End Sub
-Private Sub CheckCollideWithAsteroids(ByRef Source As Sprite, ByRef Spawner As Sprite)
-    ' Cast the spawner to AsteroidBatchSpawner to access its methods
-    Dim asteroidManager As AsteroidBatchSpawner
-    Set asteroidManager = Spawner
-
-    ' Get all active asteroids
-    Dim activeAsteroids As Collection
-    Set activeAsteroids = asteroidManager.GetActiveAsteroids
-    ' Collections handle empty cases naturally
-    If activeAsteroids.Count = 0 Then
-        Exit Sub
-    End If
-    ' Check collision with each active asteroid
-    Dim hAsteroid As Asteroid
-    For Each hAsteroid In activeAsteroids
-        If hAsteroid.Sprite_IsAlive Then
-            Source.Collide hAsteroid
-        End If
-    Next hAsteroid
-End Sub
-Private Sub CheckCollide(ByRef Source As Sprite, ByRef Other As Sprite)
-    Source.Collide Other
 End Sub

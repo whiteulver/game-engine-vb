@@ -24,6 +24,8 @@ Private CurrentFrame As Integer
 Private Frames(14) As Frame ' Image has total of 14 sprites. Each frame holds the sprite position X,Y of the image
 Private Const Height As Integer = 24 ' Height of single sprite image
 Private Const Width As Integer = 32 ' Width of single sprite image
+Private Const CHeight As Integer = 16 ' Height of collide sprite rectange
+Private Const CWidth As Integer = 32 ' Width of collide sprite rectange
 Private Alive As Boolean
 Private Explosion As Sprite
 Private Bullets As New Collection
@@ -32,6 +34,24 @@ Private BulletIndex As Integer
 Private RecycleTimer As Double
 
 Private Sub Class_Initialize()
+' Frame | Action |
+'----------------|
+'   0   |   0    |
+'   1   |   1, 3 |
+'   2   |   1, 3 |
+'   3   |   2, 4 |
+'   4   |   2, 4 |
+'   5   |   0    |
+'   6   |   1, 3 |
+'   7   |   1, 3 |
+'   8   |   2, 4 |
+'   9   |   2, 4 |
+'  10   |   0    |
+'  11   |   1, 3 |
+'  12   |   1, 3 |
+'  13   |   2, 4 |
+'  14   |   2, 4 |
+'----------------|
     Set Explosion = New Explosion
     Alive = True
     BulletTick = 0: BulletIndex = 0
@@ -97,6 +117,7 @@ Private Sub Class_Initialize()
             OffsetX = 0
             OffsetY = OffsetY + 1
         End If
+        ' Init frame with draw rectangle and collision rectangle
         Frames(i).Init OffsetX * Width, OffsetY * Height, Width, Height, 0, 0, Width, 14, 5
         OffsetX = OffsetX + 1
     Next
@@ -105,14 +126,14 @@ End Sub
 Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
     Dim dstX As Long
     Dim dstY As Long
-    
+
     If Alive = False Then
         Explosion.Update Time, Delta
         BulletHandling Time, Delta
         RecycleTimer = RecycleTimer + Delta
         Exit Sub
     End If
-    
+    BulletTick = BulletTick + 1
     If GameEvent.Name = "keydown" Then
         Dim KeyCodes() As Integer
         KeyCodes = GameEvent.getKeyCode
@@ -202,7 +223,7 @@ Private Sub RemoveBullets(ByVal Width As Long)
     Dim index As Integer: index = 1
     Dim Bullet As Sprite
     For Each Bullet In Bullets
-        If Bullet.RECT.Left > Width Or Bullet.ShouldRecycle = True Then
+        If Bullet.Rectangle.Left > Width Or Bullet.ShouldRecycle = True Then
             Bullets.Remove index
         End If
         index = index + 1
@@ -221,11 +242,11 @@ End Sub
 Public Sub Sprite_Init()
 End Sub
 
-Public Property Get Sprite_Rect() As Rectangle
+Public Property Get Sprite_Rectangle() As Rectangle
     If Alive = True Then
-        Set Sprite_Rect = Frames(CurrentFrame).CollisionRect
+        Set Sprite_Rectangle = Frames(CurrentFrame).CollisionRect
     Else
-        Set Sprite_Rect = Explosion.RECT
+        Set Sprite_Rectangle = Explosion.Rectangle
     End If
 End Property
 
@@ -252,7 +273,7 @@ Public Sub Sprite_Destroy()
         Exit Sub
     End If
     Alive = False
-    Explosion.RECT.Align RECT
+    Explosion.Rectangle.Align RECT
     Explosion.Init
 End Sub
 
@@ -265,24 +286,23 @@ Public Property Get Sprite_Registry() As Integer
 End Property
 
 Private Sub Shoot(ByVal Time As Long, Delta As Double)
-    If Time - BulletTick < 200 Then
+    If BulletTick < 20 Then
         Exit Sub
     End If
-    BulletTick = Time
-
+    BulletTick = 0
     Dim tmp As Sprite
     Set tmp = New CraftBullet
     Bullets.add tmp
-    tmp.RECT.Init RECT.Left + 22, RECT.Top + 12, tmp.RECT.Width, tmp.RECT.Height
+    tmp.Rectangle.Init RECT.Left + 22, RECT.Top + 12, tmp.Rectangle.Width, tmp.Rectangle.Height
 End Sub
 
 Public Sub Sprite_Collide(ByRef Other As Sprite)
-    If RECT.Collide(Other.RECT) And Other.IsAlive Then
+    If Frames(CurrentFrame).CollisionRect.Collide(Other.Rectangle) And Other.IsAlive Then
         Sprite_Destroy
     End If
     Dim Bullet As Sprite
     For Each Bullet In Bullets
-        If Bullet.RECT.Collide(Other.RECT) And Other.IsAlive Then
+        If Bullet.Rectangle.Collide(Other.Rectangle) And Other.IsAlive Then
             Other.Collided Bullet
             Bullet.Collided Other
         End If

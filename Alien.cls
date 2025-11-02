@@ -18,13 +18,13 @@ Private Registry As Integer
 Private Speed As Integer
 Private Const Height As Integer = 23 ' Height of single sprite image
 Private Const Width As Integer = 20 ' Width of single sprite image
-Private Rect As Rectangle
+Private RECT As Rectangle
 Private srcRect As Rectangle
 
 Private Sub Class_Initialize()
     Registry = 2
-    Set Rect = New Rectangle
-    Rect.Init 320, 50, Width, Height
+    Set RECT = New Rectangle
+    RECT.Init 320, 50, Width, Height
     Set srcRect = New Rectangle
     srcRect.Init 134, 39, Width, Height ' The source region from image ProjectX_SE_level1_sprites.bmp
     Speed = 2
@@ -35,15 +35,15 @@ Public Sub Sprite_Init()
 End Sub
 
 Public Sub Sprite_Update(ByVal Time As Long, Delta As Double)
-    Rect.Move -Speed, 0
+    RECT.Move -Speed, 0
 End Sub
 
 Public Sub Sprite_Draw(ByRef Render As RenderingEngine)
-    Render.Draw 2, srcRect, Rect
+    Render.Draw 2, srcRect, RECT
 End Sub
 
-Public Property Get Sprite_Rect() As Rectangle
-    Sprite_Rect = Rect
+Public Property Get Sprite_Rectangle() As Rectangle
+    Set Sprite_Rectangle = RECT
 End Property
 
 Public Sub Sprite_Listen(ByRef GameEventIn As DomainEvent)
