@@ -48,6 +48,7 @@ Private Declare Function SetBkColor Lib "gdi32" (ByVal hDC As Long, ByVal crColo
 Private Declare Function SetBkMode Lib "gdi32" (ByVal hDC As Long, ByVal nBkMode As Long) As Long
 Private Declare Function DeleteObject Lib "gdi32" (ByVal hObject As Long) As Long
 Private Declare Function GetObject Lib "gdi32" Alias "GetObjectA" (ByVal hObject As Long, ByVal nCount As Long, lpObject As Any) As Long
+Private Declare Function GetCurrentObject Lib "gdi32" (ByVal hDC As Long, ByVal uObjectType As Long) As Long
 Private Declare Function LoadImage Lib "user32" Alias "LoadImageA" (ByVal hInst As Long, ByVal lpsz As String, ByVal uType As Long, ByVal cxDesired As Long, ByVal cyDesired As Long, ByVal fuLoad As Long) As Long
 Private Declare Function GetClientRect Lib "user32" (ByVal hWnd As Long, lpRect As RECT) As Long
 Private Type POINTAPI
@@ -59,6 +60,7 @@ Private Declare Function ClientToScreen Lib "user32" (ByVal hWnd As Long, lpPoin
 Private Const IMAGE_BITMAP As Long = 0
 Private Const LR_LOADFROMFILE As Long = &H10
 Private Const LR_CREATEDIBSECTION As Long = &H2000
+Private Const OBJ_BITMAP As Long = 7
 
 Private Type BITMAP
     bmType As Long
@@ -346,18 +348,34 @@ Private Function CreateSurfaceFromContext(ByVal context As Long) As DirectDrawSu
     Dim SurfDesc As DDSURFACEDESC2
     Dim surface As DirectDrawSurface7
     Dim hDC As Long, surfaceDC As Long
+    Dim hBmp As Long
+    Dim bm As BITMAP
+    Dim width As Long, height As Long
     
-    ' Create offscreen surface (assume 32x32 for now)
+    ' Get bitmap handle from DC context
+    hBmp = GetCurrentObject(context, OBJ_BITMAP)
+    If hBmp <> 0 Then
+        ' Get bitmap dimensions
+        GetObject hBmp, Len(bm), bm
+        width = bm.bmWidth
+        height = bm.bmHeight
+    Else
+        ' Fallback to default size if we can't get dimensions
+        width = 32
+        height = 32
+    End If
+    
+    ' Create offscreen surface with detected size
     ZeroDDSD SurfDesc
     SurfDesc.lFlags = DDSD_CAPS Or DDSD_WIDTH Or DDSD_HEIGHT
     SurfDesc.ddsCaps.lCaps = DDSCAPS_OFFSCREENPLAIN Or DDSCAPS_SYSTEMMEMORY
-    SurfDesc.lWidth = 32
-    SurfDesc.lHeight = 32
+    SurfDesc.lWidth = width
+    SurfDesc.lHeight = height
     Set surface = DDRAW.CreateSurface(SurfDesc)
     
     ' Get DC for surface and copy from context
     surfaceDC = surface.GetDC()
-    BitBlt surfaceDC, 0, 0, 32, 32, context, 0, 0, vbSrcCopy
+    BitBlt surfaceDC, 0, 0, width, height, context, 0, 0, vbSrcCopy
     surface.ReleaseDC surfaceDC
     
     Set CreateSurfaceFromContext = surface
