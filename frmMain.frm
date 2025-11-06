@@ -4,14 +4,14 @@ Begin VB.Form frmMain
    BackColor       =   &H00000000&
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Game Engine"
-   ClientHeight    =   7680
+   ClientHeight    =   6144
    ClientLeft      =   48
    ClientTop       =   336
    ClientWidth     =   9600
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   640
+   ScaleHeight     =   512
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   800
    StartUpPosition =   2  'CenterScreen
@@ -31,7 +31,7 @@ Private Sub Form_GotFocus()
     Set GameEngine = New Engine
     Set Rendering = New DirectDrawRenderingEngine
     Dim State As GameState
-    Set State = New PlayingState
+    Set State = New PlatformerPlayingState
     
     Rendering.Init frmMain.hWnd, Boundary
     GameEngine.Init Rendering, Boundary, State
